@@ -1,0 +1,4 @@
+TABS:
+1. Data sources: Load raw file to Application storage (S3) and read it from there (TABLE CSV, JSON, EXCEL?, TSV, PARQUET), Connect to databases (PostgreSQL, Clickhouse, most common SQL/NOSQL databases), user's S3. Metadata for previously configurated datasets.
+2. Data builder: Set relations between Blocks of Source tables schemas (type, name) to configurate New dataset.
+3. ETL manager. Run processing of datasets, set schedule, set alerting. 
