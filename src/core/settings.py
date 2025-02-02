@@ -48,7 +48,9 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # Your apps
     "common",
+    'datasources',
     # Third-party apps
+    'django_json_widget',
     "django_celery_beat",
     "storages",
     "django_extensions",
