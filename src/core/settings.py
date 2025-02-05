@@ -33,19 +33,13 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    "unfold",  # before django.contrib.admin
-    "unfold.contrib.filters",  # optional, if special filters are needed
-    "unfold.contrib.forms",  # optional, if special form elements are needed
-    "unfold.contrib.inlines",  # optional, if special inlines are needed
-    "unfold.contrib.import_export",  # optional, if django-import-export package is used
-    "unfold.contrib.guardian",  # optional, if django-guardian package is used
-    "unfold.contrib.simple_history",  # optional, if django-simple-history package is used
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    'rest_framework',
     # Your apps
     "common",
     'datasources',
@@ -222,137 +216,3 @@ LOGGING = {
 from logging.config import dictConfig
 
 dictConfig(LOGGING)
-
-
-# from django.templatetags.static import static
-from django.urls import reverse_lazy
-
-UNFOLD = {
-    # "SITE_TITLE": "Custom suffix in <title> tag",
-    # "SITE_HEADER": "Appears in sidebar at the top",
-    # "SITE_URL": "/",
-    # "SITE_ICON": lambda request: static("icon.svg"),  # both modes, optimise for 32px height
-    # "SITE_ICON": {
-    #     "light": lambda request: static("icon-light.svg"),  # light mode
-    #     "dark": lambda request: static("icon-dark.svg"),  # dark mode
-    # },
-    # "SITE_LOGO": lambda request: static("logo.svg"),  # both modes, optimise for 32px height
-    # "SITE_LOGO": {
-    #     "light": lambda request: static("logo-light.svg"),  # light mode
-    #     "dark": lambda request: static("logo-dark.svg"),  # dark mode
-    # },
-    # "SITE_SYMBOL": "speed",  # symbol from icon set
-    # "SITE_FAVICONS": [
-    #     {
-    #         "rel": "icon",
-    #         "sizes": "32x32",
-    #         "type": "image/svg+xml",
-    #         "href": lambda request: static("favicon.svg"),
-    #     },
-    # ],
-    "SHOW_HISTORY": True,  # show/hide "History" button, default: True
-    "SHOW_VIEW_ON_SITE": False,  # show/hide "View on site" button, default: True
-    # "ENVIRONMENT": "sample_app.environment_callback",
-    # "DASHBOARD_CALLBACK": "datapipes.views.dashboard_callback",
-    # "THEME": "dark",  # Force theme: "dark" or "light". Will disable theme switcher
-    # "LOGIN": {
-    #     "image": lambda request: static("sample/login-bg.jpg"),
-    #     "redirect_after": lambda request: reverse_lazy("admin:datapipes_changelist"),
-    # },
-    # "STYLES": [
-    #     lambda request: static("css/style.css"),
-    # ],
-    # "SCRIPTS": [
-    #     lambda request: static("js/script.js"),
-    # ],
-    "COLORS": {
-        "font": {
-            "subtle-light": "107 120 128",
-            "subtle-dark": "156 170 175",
-            "default-light": "75 89 99",
-            "default-dark": "209 216 219",
-            "important-light": "17 35 39",
-            "important-dark": "243 245 246",
-        },
-        "primary": {
-            "50": "221 239 254",
-            "100": "194 228 253",
-            "200": "168 216 252",
-            "300": "137 193 250",
-            "400": "109 170 234",
-            "500": "81 146 221",
-            "600": "49 113 196",
-            "700": "17 81 170",
-            "800": "13 53 113",
-            "900": "8 36 75",
-            "950": "0 0 0",
-        },
-    },
-    # "EXTENSIONS": {
-    # },
-    # "SIDEBAR": {
-    #     "show_search": False,  # Search in applications and models names
-    #     "show_all_applications": False,  # Dropdown with all applications and models
-    #     "navigation": [
-    #         {
-    #             "title": "Navigation",
-    #             "separator": True,  # Top border
-    #             "collapsible": False,  # Collapsible group of links
-    #             "items": [
-    #                 {
-    #                     "title": "Dashboard",
-    #                     "icon": "dashboard",  # Supported icon set: https://fonts.google.com/icons
-    #                     "link": reverse_lazy("admin:index"),
-    #                     # "badge": "datapipes.badge_callback",
-    #                     # "permission": lambda request: request.user.is_superuser,
-    #                 },
-    #                 {
-    #                     "title": "Cameras",
-    #                     "icon": "videocam",  # Supported icon set: https://fonts.google.com/icons
-    #                     "link": reverse_lazy("admin:datapipes_camera_changelist"),
-    #                     # "badge": "datapipes.badge_callback",
-    #                     # "permission": lambda request: request.user.is_superuser,
-    #                 },
-    #                 {
-    #                     "title": "Alerts",
-    #                     "icon": "campaign",  # Supported icon set: https://fonts.google.com/icons
-    #                     "link": reverse_lazy("admin:app_list", kwargs={"app_label": "alert"}),
-    #                     # "permission": lambda request: request.user.is_superuser,
-    #                 },
-    #                 {
-    #                     "title": "Users",
-    #                     "icon": "people",
-    #                     "link": reverse_lazy("admin:app_list", kwargs={"app_label": "auth"}),
-    #                     # "permission": lambda request: request.user.is_superuser,
-    #                 },
-    #                 {
-    #                     "title": "Storages",
-    #                     "icon": "cloud_upload",
-    #                     "link": reverse_lazy("admin:common_s3config_changelist"),
-    #                     # "permission": lambda request: request.user.is_superuser,
-    #                 },
-    #             ],
-    #         },
-    #     ],
-    # },
-    # "TABS": [
-    #     {
-    #         "models": [
-    #             "datapipes.camera",
-    #             "datapipes.tag",
-    #         ],
-    #         "items": [
-    #             {
-    #                 "title": "Cameras",
-    #                 "link": reverse_lazy("admin:datapipes_camera_changelist"),
-    #                 # "permission": "datapipes.permission_callback",
-    #             },
-    #             {
-    #                 "title": "Tags",
-    #                 "link": reverse_lazy("admin:datapipes_tag_changelist"),
-    #                 # "permission": lambda request: request.user.is_superuser,
-    #             },
-    #         ],
-    #     },
-    # ],
-}

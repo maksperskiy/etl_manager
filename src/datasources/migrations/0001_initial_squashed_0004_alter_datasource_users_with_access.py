@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=255)),
-                ('type', models.CharField(choices=[('CSV', 'CSV File'), ('JSON', 'JSON File'), ('XLSX', 'Excel File'), ('PARQUET', 'Parquet File'), ('POSTGRES', 'PostgreSQL'), ('MYSQL', 'MySQL'), ('S3', 'Amazon S3')], max_length=50)),
+                ('source_type', models.CharField(choices=[('CSV', 'CSV File'), ('JSON', 'JSON File'), ('XLSX', 'Excel File'), ('PARQUET', 'Parquet File'), ('POSTGRES', 'PostgreSQL'), ('MYSQL', 'MySQL'), ('S3', 'Amazon S3')], max_length=50)),
                 ('created_at', models.DateTimeField(default=django.utils.timezone.now)),
                 ('config', models.JSONField(encoder=datasources.encoders.PrettyJSONEncoder)),
                 ('last_used', models.DateTimeField(blank=True, null=True)),
