@@ -3,9 +3,11 @@ import './DataSources.scss';
 import { Add } from '@carbon/icons-react';
 import { Button, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@carbon/react';
 import { useState } from 'react';
+import dataSourceService from '../../services/data-source';
 import DateRenderer from './renderers/DateRenderer';
 import { ColumnDef, DataSource } from './types';
 
+console.log(dataSourceService.getDataSources())
 
 export default function DataSources() {
   const columnDefs: ColumnDef[] = [
@@ -28,7 +30,7 @@ export default function DataSources() {
     }
   ];
 
-  const [dataSources, setDataSources] = useState([{
+  const [dataSources] = useState([{
     name: 'MacOS',
     type: 'excel',
     dateLoaded: 0,

@@ -2,7 +2,7 @@ import { ApiService } from "../api";
 
 export default class DataSourceService {
   #api;
-  #baseUrl = '/data-source'
+  #baseUrl = 'datasources'
 
   constructor(api: ApiService) {
     this.#api = api;
