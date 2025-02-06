@@ -12,8 +12,8 @@ class DataSourceType(models.TextChoices):
 
 class DataSource(models.Model):
     name = models.CharField(max_length=255)
-    type = models.CharField(max_length=50, choices=DataSourceType.choices)
-    created_at = models.DateTimeField(default=timezone.now)
+    source_type = models.CharField(max_length=50, choices=DataSourceType.choices)
+    created_at = models.DateTimeField(auto_now_add=True)
     config = models.JSONField(encoder=PrettyJSONEncoder, blank=True)
     last_used = models.DateTimeField(null=True, blank=True)
     author = models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL, related_name='authored_data_sources')

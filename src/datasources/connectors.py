@@ -11,7 +11,7 @@ class DataSourceConnector:
         self.spark = SparkSession.builder.appName("DataSourceManager").getOrCreate()
 
     def connect(self):
-        source_type = self.data_source.type
+        source_type = self.data_source.source_type
         config = self.data_source.config
 
         if source_type == "POSTGRES":
