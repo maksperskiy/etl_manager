@@ -2,12 +2,10 @@ import './DataSources.scss';
 
 import { Add } from '@carbon/icons-react';
 import { Button, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@carbon/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import dataSourceService from '../../services/data-source';
 import DateRenderer from './renderers/DateRenderer';
 import { ColumnDef, DataSource } from './types';
-
-console.log(dataSourceService.getDataSources())
 
 export default function DataSources() {
   const columnDefs: ColumnDef[] = [
@@ -16,12 +14,12 @@ export default function DataSources() {
       label: 'Name',
     },
     {
-      key: 'dateLoaded',
+      key: 'created_at',
       label: 'Loaded',
       renderer: DateRenderer
     },
     {
-      key: 'dateUsed',
+      key: 'last_used',
       label: 'Last Used',
     },
     {
@@ -30,12 +28,11 @@ export default function DataSources() {
     }
   ];
 
-  const [dataSources] = useState([{
-    name: 'MacOS',
-    type: 'excel',
-    dateLoaded: 0,
-    dateUsed: 0,
-  }]);
+  const [dataSources, setDataSources] = useState<DataSource[]>([]);
+
+  useEffect(() => {
+     dataSourceService.getDataSources().then(r => r.json()).then((data: DataSource[]) => setDataSources(data))
+  }, [])
 
   return <div className="etlm-data-sources">
     <Button className="etlm-data-sources__add" renderIcon={Add}>Add New Data Source</Button>
@@ -46,12 +43,10 @@ export default function DataSources() {
         </TableRow>
       </TableHead>
       <TableBody>
-        {dataSources.map(src => <TableRow>
-          {columnDefs.map(def => <TableCell>
-            {
-              def.renderer
-                ? def.renderer({ dataSource: src, key: def.key })
-                : src[def.key as keyof DataSource]
+        {dataSources.map(src => <TableRow key={src.name}>
+          {columnDefs.map(def => <TableCell  key={def.key}>
+            { src[def.key as keyof DataSource]
+
             }
           </TableCell>)}
         </TableRow>)}

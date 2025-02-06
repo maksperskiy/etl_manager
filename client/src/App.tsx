@@ -18,16 +18,16 @@ function App() {
       title: 'Data Sources',
       component: <DataSources />
     },
-    {
-      slug: 'data-builder',
-      title: 'Data Builder',
-      component: <DataSources />
-    },
-    {
-      slug: 'manager',
-      title: 'Manager',
-      component: <DataSources />
-    },
+    // {
+    //   slug: 'data-builder',
+    //   title: 'Data Builder',
+    //   component: <div />
+    // },
+    // {
+    //   slug: 'manager',
+    //   title: 'Manager',
+    //   component: <DataSources />
+    // },
   ];
 
   return (

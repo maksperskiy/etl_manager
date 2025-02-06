@@ -1,10 +1,12 @@
 import { ReactNode } from "react"
 
 export interface DataSource {
-  name: string,
-  type: string,
-  dateLoaded: number,
-  dateUsed: number,
+  name: string
+  author: number
+  file_ext: string
+  source_type: string
+  created_at: number
+  last_used: number
 }
 
 export interface RendererProps {
