@@ -3,12 +3,17 @@ from urllib.parse import urlparse
 import boto3
 from pyspark.sql import SparkSession
 from botocore.client import Config
+from django.conf import settings
 
 
 class DataSourceConnector:
     def __init__(self, data_source):
         self.data_source = data_source
-        self.spark = SparkSession.builder.appName("DataSourceManager").getOrCreate()
+        self.spark = (
+            SparkSession.builder.master(settings.SPARK_MASTER_URL)
+            .appName("DataSourceManager")
+            .getOrCreate()
+        )
 
     def connect(self):
         source_type = self.data_source.source_type
@@ -63,7 +68,7 @@ class DataSourceConnector:
 
     def _connect_s3(self, config):
         if self.data_source.upload:
-            s3_path = f"{config.get('path', '')}/{self.data_source.upload.name}"
+            s3_path = f"{self.data_source.upload.name}"
             config["path"] = s3_path  # Обновляем путь для чтения
 
         # Определение формата файла
@@ -72,7 +77,6 @@ class DataSourceConnector:
         file_type = config.get("file_type") or file_ext
 
         if self.data_source.upload:
-            from django.conf import settings
 
             storage_config = settings.STORAGES["default"]["OPTIONS"]
             bucket = storage_config["bucket_name"]

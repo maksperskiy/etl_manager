@@ -225,3 +225,5 @@ LOGGING = {
 from logging.config import dictConfig
 
 dictConfig(LOGGING)
+
+SPARK_MASTER_URL = os.getenv("SPARK_MASTER_URL")

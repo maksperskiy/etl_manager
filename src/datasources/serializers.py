@@ -10,7 +10,7 @@ class DataSourceDetailSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     file_ext = serializers.SerializerMethodField()
-    def get_file_ext(self, obj):
+    def get_file_ext(self, obj: DataSource):
         return obj.upload.name.rsplit(".")[-1] if obj.source_type == "FILE" else None
 
 class DataSourceListSerializer(DataSourceDetailSerializer):
