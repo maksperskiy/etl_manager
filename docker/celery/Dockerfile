@@ -1,6 +1,6 @@
 FROM python:3.12 AS base
 
-ENV TZ="Europe/Minsk"
+ENV TZ "Europe/Minsk"
 
 WORKDIR /opt/app
 

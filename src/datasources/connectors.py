@@ -9,9 +9,15 @@ from django.conf import settings
 class DataSourceConnector:
     def __init__(self, data_source):
         self.data_source = data_source
+        os.environ['PYSPARK_SUBMIT_ARGS'] = (
+            '--packages com.amazonaws:aws-java-sdk-bundle:1.12.592,'
+            'org.apache.hadoop:hadoop-aws:3.2.2,com.google.guava:guava:32.1.3-jre,'
+            # 'com.clickhouse:clickhouse-jdbc:0.4.6,'
+            'org.postgresql:postgresql:42.7.0 pyspark-shell'
+        )
         self.spark = (
             SparkSession.builder.master(settings.SPARK_MASTER_URL)
-            .appName("DataSourceManager")
+            .appName(data_source.name)
             .getOrCreate()
         )
 
@@ -95,12 +101,13 @@ class DataSourceConnector:
         # Настройка Spark для работы с MinIO
         self.spark._jsc.hadoopConfiguration().set("fs.s3a.access.key", access_key)
         self.spark._jsc.hadoopConfiguration().set("fs.s3a.secret.key", secret_key)
+        self.spark._jsc.hadoopConfiguration().set("com.amazonaws.services.s3.enableV4", "true")
         self.spark._jsc.hadoopConfiguration().set(
-            "fs.s3a.endpoint", urlparse(endpoint_url).hostname
+            "fs.s3a.endpoint", endpoint_url
         )
-        self.spark._jsc.hadoopConfiguration().set("fs.s3a.path.style.access", "true")
         self.spark._jsc.hadoopConfiguration().set(
-            "fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem"
+            "fs.s3a.aws.credentials.provider",
+            "org.apache.hadoop.fs.s3a.SimpleAWSCredentialsProvider"
         )
 
         # Чтение данных в зависимости от типа

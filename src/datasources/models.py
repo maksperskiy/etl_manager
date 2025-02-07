@@ -11,8 +11,8 @@ class DataSourceType(models.TextChoices):
     S3 = 'S3', '☁️ S3'
 
 class DataSource(models.Model):
-    name = models.CharField(max_length=255)
-    source_type = models.CharField(max_length=50, choices=DataSourceType.choices)
+    name = models.CharField(max_length=255, unique=True)
+    source_type = models.CharField(max_length=50, blank=False, choices=DataSourceType.choices)
     created_at = models.DateTimeField(auto_now_add=True)
     config = models.JSONField(encoder=PrettyJSONEncoder, blank=True)
     last_used = models.DateTimeField(null=True, blank=True)
