@@ -1,23 +1,23 @@
 import os
-from urllib.parse import urlparse
-import boto3
 from pyspark.sql import SparkSession
-from botocore.client import Config
 from django.conf import settings
 
 
 class DataSourceConnector:
     def __init__(self, data_source):
         self.data_source = data_source
-        os.environ['PYSPARK_SUBMIT_ARGS'] = (
-            '--packages com.amazonaws:aws-java-sdk-bundle:1.12.592,'
-            'org.apache.hadoop:hadoop-aws:3.2.2,com.google.guava:guava:32.1.3-jre,'
+        os.environ["PYSPARK_SUBMIT_ARGS"] = (
+            "--packages "
+            "com.amazonaws:aws-java-sdk-bundle:1.12.262,"
+            "org.apache.hadoop:hadoop-aws:3.3.4,"
+            # 'com.google.guava:guava:14.0.1,'
             # 'com.clickhouse:clickhouse-jdbc:0.4.6,'
-            'org.postgresql:postgresql:42.7.0 pyspark-shell'
+            "org.postgresql:postgresql:42.7.0"
+            " pyspark-shell"
         )
         self.spark = (
             SparkSession.builder.master(settings.SPARK_MASTER_URL)
-            .appName(data_source.name)
+            .appName(f"{data_source.name}-{data_source.id}")
             .getOrCreate()
         )
 
@@ -89,11 +89,13 @@ class DataSourceConnector:
             access_key = storage_config["access_key"]
             secret_key = storage_config["secret_key"]
             endpoint_url = storage_config["endpoint_url"]
+            region_name = storage_config["region_name"]
         else:
             bucket = config["bucket"]
             access_key = config["access_key"]
             secret_key = config["secret_key"]
             endpoint_url = config["endpoint_url"]
+            region_name = config["region_name"]
 
         # Формирование пути S3
         s3_path = f"s3a://{bucket}/{path}"
@@ -101,13 +103,15 @@ class DataSourceConnector:
         # Настройка Spark для работы с MinIO
         self.spark._jsc.hadoopConfiguration().set("fs.s3a.access.key", access_key)
         self.spark._jsc.hadoopConfiguration().set("fs.s3a.secret.key", secret_key)
-        self.spark._jsc.hadoopConfiguration().set("com.amazonaws.services.s3.enableV4", "true")
         self.spark._jsc.hadoopConfiguration().set(
-            "fs.s3a.endpoint", endpoint_url
+            "com.amazonaws.services.s3.enableV4", "true"
         )
+        self.spark._jsc.hadoopConfiguration().set("fs.s3a.path.style.access", "true")
+        self.spark._jsc.hadoopConfiguration().set("fs.s3a.endpoint", endpoint_url)
+        self.spark._jsc.hadoopConfiguration().set("fs.s3a.endpoint.region", region_name)
         self.spark._jsc.hadoopConfiguration().set(
             "fs.s3a.aws.credentials.provider",
-            "org.apache.hadoop.fs.s3a.SimpleAWSCredentialsProvider"
+            "org.apache.hadoop.fs.s3a.SimpleAWSCredentialsProvider",
         )
 
         # Чтение данных в зависимости от типа

@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y \
 
 RUN apt -y update \
     && pip3 install --upgrade pip
-RUN pip3 install pyspark>=3.0.0 
+RUN pip3 install pyspark==3.5.*
 
 FROM base
 
