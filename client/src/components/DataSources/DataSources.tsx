@@ -4,6 +4,7 @@ import { Add } from '@carbon/icons-react';
 import { Button, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@carbon/react';
 import { useEffect, useState } from 'react';
 import dataSourceService from '../../services/data-source';
+import useModalStore from '../../stores/modal';
 import DateRenderer from './renderers/DateRenderer';
 import { ColumnDef, DataSource } from './types';
 
@@ -28,14 +29,26 @@ export default function DataSources() {
     }
   ];
 
+  const { open } = useModalStore();
+
+  const handleAddClick = () => {
+    open({
+      component: <Button />,
+      data: {}
+    });
+  }
+
   const [dataSources, setDataSources] = useState<DataSource[]>([]);
 
   useEffect(() => {
-     dataSourceService.getDataSources().then(r => r.json()).then((data: DataSource[]) => setDataSources(data))
+    (async () => {
+      const res = await dataSourceService.getDataSources();
+      setDataSources(await res.json());
+    })();
   }, [])
 
   return <div className="etlm-data-sources">
-    <Button className="etlm-data-sources__add" renderIcon={Add}>Add New Data Source</Button>
+    <Button className="etlm-data-sources__add" renderIcon={Add} onClick={handleAddClick}>Add New Data Source</Button>
     <Table aria-label="sample table">
       <TableHead>
         <TableRow>
@@ -45,9 +58,7 @@ export default function DataSources() {
       <TableBody>
         {dataSources.map(src => <TableRow key={src.name}>
           {columnDefs.map(def => <TableCell  key={def.key}>
-            { src[def.key as keyof DataSource]
-
-            }
+            { src[def.key as keyof DataSource] }
           </TableCell>)}
         </TableRow>)}
       </TableBody>

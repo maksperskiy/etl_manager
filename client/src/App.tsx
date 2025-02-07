@@ -4,6 +4,7 @@ import { ReactNode } from 'react'
 import './App.scss'
 import DataSources from './components/DataSources/DataSources'
 import PageWrapper from './components/common/PageWrapper'
+import ModalProvider from './components/providers/ModalProvider/ModalProvider'
 
 interface TabConfig {
   slug: string,
@@ -32,6 +33,7 @@ function App() {
 
   return (
     <>
+      <ModalProvider />
       <Tabs className="etlm-tabs">
         <TabList contained>
           {config.map(item => <Tab key={item.slug}>{ item.title }</Tab>)}

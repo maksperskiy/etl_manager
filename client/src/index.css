@@ -2,6 +2,10 @@ body {
     height: 100vh;
 }
 
+dialog::backdrop {
+  background: darkorange;
+}
+
 #root {
     height: 100%;
     dipslay: flex;
