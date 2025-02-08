@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import DataSource  # Replace with your actual model
+from .models.datasource import DataSource 
 
 
 class DataSourceDetailSerializer(serializers.ModelSerializer):
@@ -10,7 +10,6 @@ class DataSourceDetailSerializer(serializers.ModelSerializer):
     file_ext = serializers.SerializerMethodField()
 
     def get_file_ext(self, obj: DataSource):
-        obj.get_connection().printSchema()
         return obj.upload.name.rsplit(".")[-1] if obj.source_type == "FILE" else None
 
 
@@ -18,6 +17,7 @@ class DataSourceListSerializer(DataSourceDetailSerializer):
     class Meta:
         model = DataSource
         fields = [
+            "pk",
             "name",
             "source_type",
             "author",
@@ -30,7 +30,7 @@ class DataSourceListSerializer(DataSourceDetailSerializer):
 class DataSourceCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = DataSource
-        fields = ["name", "source_type", "config", "upload", "users_with_access"]
+        fields = ["pk", "name", "source_type", "config", "upload", "users_with_access"]
 
     def validate(self, data):
         if data["source_type"] == "FILE" and not data.get("upload"):

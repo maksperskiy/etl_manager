@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import DataSource, DataSourceType
+from .models.datasource import DataSource, DataSourceType
 from django_json_widget.widgets import JSONEditorWidget
 from django.db import models
 
