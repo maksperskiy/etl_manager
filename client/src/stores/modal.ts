@@ -1,12 +1,24 @@
+import { ButtonKind } from '@carbon/react';
 import { ReactElement } from 'react';
 import { create } from 'zustand';
 
-export interface Modal<T = { [key: string]: unknown }> {
-  component: ReactElement,
-  data: T
+export type ModalActionCallback = (...args: unknown[]) => void;
+
+export interface ModalAction {
+  key: string
+  label: string
+  kind: ButtonKind
+  callback?: ModalActionCallback
+  close: boolean
 }
 
-interface IndexedModal<T = { [key: string]: unknown }> extends Modal<T> {
+export interface Modal {
+  component: ReactElement
+  persistent?: boolean
+  actions: ModalAction[]
+}
+
+export interface IndexedModal extends Modal {
   id: string
 }
 

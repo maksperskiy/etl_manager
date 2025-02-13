@@ -34,7 +34,11 @@ export default function DataSources() {
   const handleAddClick = () => {
     open({
       component: <Button />,
-      data: {}
+      actions: [
+        { key: 'close', label: 'Close', kind: 'ghost', close: true },
+        { key: 'save', label: 'Save', kind: 'primary', close: true }
+      ],
+      persistent: true
     });
   }
 
