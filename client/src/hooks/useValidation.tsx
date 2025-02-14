@@ -23,8 +23,8 @@ export default function useValidation<T extends Record<string, unknown> = Record
   const handler = (model: T) => {
     const newErrors: ValidationErrors = {};
 
-    Object.entries(schema).forEach(([key, rules]) => {
-      rules.find((rule: Validator) => {
+    Object.keys(schema).forEach((key) => {
+      schema[key].find((rule: Validator) => {
         const validatorResult = rule(key, model);
         if (validatorResult !== true) {
           newErrors[key] = validatorResult;
