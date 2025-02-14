@@ -5,7 +5,7 @@
     transform: translateY(-50%);
     padding: 0;
     border: none;
-    min-width: 360px;
+    min-width: 480px;
     z-index: 3;
 
     &__backdrop {
@@ -25,10 +25,30 @@
         display: flex;
         flex-direction: row;
         justify-content: flex-end;
-        align-items: center;
+        align-items: flex-start;
+
+        h4 {
+            margin-right: auto;
+            padding: 14px 15px;
+        }
 
         &--close {
             margin-left: auto;
+        }
+    }
+
+    &__body {
+        padding: 14px 15px 28px;
+    }
+
+    &__footer {
+        display: flex;
+        flex-direction: row;
+
+        .cds--btn {
+            dislay: flex;
+            flex-grow: 1;
+            padding: 14px 63px 14px 15px;
         }
     }
 }

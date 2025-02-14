@@ -2,9 +2,10 @@ import './DataSources.scss';
 
 import { Add } from '@carbon/icons-react';
 import { Button, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@carbon/react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import dataSourceService from '../../services/data-source';
 import useModalStore from '../../stores/modal';
+import DataSourceForm, { DataSourceFormModel } from './components/DataSourceForm/DataSourceForm';
 import DateRenderer from './renderers/DateRenderer';
 import { ColumnDef, DataSource } from './types';
 
@@ -30,13 +31,26 @@ export default function DataSources() {
   ];
 
   const { open } = useModalStore();
+  const createModel = useRef({});
 
   const handleAddClick = () => {
     open({
-      component: <Button />,
+      title: 'Add Data Source',
+      component: <DataSourceForm onChange={(model: DataSourceFormModel) => { createModel.current = model; }} />,
       actions: [
-        { key: 'close', label: 'Close', kind: 'ghost', close: true },
-        { key: 'save', label: 'Save', kind: 'primary', close: true }
+        {
+          key: 'close',
+          label: 'Close',
+          kind: 'ghost',
+          close: true
+        },
+        {
+          key: 'save',
+          label: 'Save',
+          kind: 'primary',
+          close: true,
+          callback: () => { console.log(createModel.current) }
+        }
       ],
       persistent: true
     });

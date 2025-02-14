@@ -2,7 +2,7 @@ import { ButtonKind } from '@carbon/react';
 import { ReactElement } from 'react';
 import { create } from 'zustand';
 
-export type ModalActionCallback = (...args: unknown[]) => void;
+export type ModalActionCallback = () => void;
 
 export interface ModalAction {
   key: string
@@ -13,6 +13,7 @@ export interface ModalAction {
 }
 
 export interface Modal {
+  title?: string
   component: ReactElement
   persistent?: boolean
   actions: ModalAction[]

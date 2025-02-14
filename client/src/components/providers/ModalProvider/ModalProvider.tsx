@@ -33,6 +33,7 @@ export default function ModalProvider () {
     />
     {modals.map(modal => <dialog className="modal" open>
       <div className="modal__header">
+        {modal.title && <h4>{ modal.title }</h4>}
         <Button
           className="modal__header--close"
           hasIconOnly

@@ -1,49 +1,55 @@
 {
-  "hash": "0b66c512",
+  "hash": "4ddd38e4",
   "configHash": "06239bfc",
-  "lockfileHash": "597b3a8c",
-  "browserHash": "bb57c325",
+  "lockfileHash": "a528abe2",
+  "browserHash": "356c4eec",
   "optimized": {
     "react/jsx-dev-runtime": {
       "src": "../../node_modules/.pnpm/react@18.3.1/node_modules/react/jsx-dev-runtime.js",
       "file": "react_jsx-dev-runtime.js",
-      "fileHash": "e33e7869",
+      "fileHash": "c635ecab",
       "needsInterop": true
     },
     "react": {
       "src": "../../node_modules/.pnpm/react@18.3.1/node_modules/react/index.js",
       "file": "react.js",
-      "fileHash": "5712f915",
+      "fileHash": "35afadbf",
       "needsInterop": true
     },
     "react-dom/client": {
       "src": "../../node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/client.js",
       "file": "react-dom_client.js",
-      "fileHash": "ef168158",
+      "fileHash": "0111576a",
       "needsInterop": true
     },
     "@carbon/react": {
-      "src": "../../../node_modules/.pnpm/@carbon+react@1.75.0_react-dom@19.0.0_react@19.0.0__react@19.0.0_sass@1.83.4/node_modules/@carbon/react/es/index.js",
+      "src": "../../node_modules/.pnpm/@carbon+react@1.76.0_react-dom@18.3.1_react@18.3.1__react@18.3.1_sass@1.84.0/node_modules/@carbon/react/es/index.js",
       "file": "@carbon_react.js",
-      "fileHash": "9878aeb9",
+      "fileHash": "0c602687",
       "needsInterop": false
     },
     "@carbon/icons-react": {
-      "src": "../../../node_modules/.pnpm/@carbon+icons-react@11.54.0_react@19.0.0/node_modules/@carbon/icons-react/es/index.js",
+      "src": "../../node_modules/.pnpm/@carbon+icons-react@11.55.0_react@18.3.1/node_modules/@carbon/icons-react/es/index.js",
       "file": "@carbon_icons-react.js",
-      "fileHash": "a428777d",
+      "fileHash": "7ec3ccce",
+      "needsInterop": false
+    },
+    "zustand": {
+      "src": "../../node_modules/.pnpm/zustand@5.0.3_@types+react@18.3.18_react@18.3.1/node_modules/zustand/esm/index.mjs",
+      "file": "zustand.js",
+      "fileHash": "863e365f",
       "needsInterop": false
     }
   },
   "chunks": {
-    "chunk-GX3VV2FZ": {
-      "file": "chunk-GX3VV2FZ.js"
+    "chunk-LUIC4BGO": {
+      "file": "chunk-LUIC4BGO.js"
     },
-    "chunk-RUNR7HNO": {
-      "file": "chunk-RUNR7HNO.js"
+    "chunk-B3D7A2BX": {
+      "file": "chunk-B3D7A2BX.js"
     },
-    "chunk-V4OQ3NZ2": {
-      "file": "chunk-V4OQ3NZ2.js"
+    "chunk-A5UQXRKC": {
+      "file": "chunk-A5UQXRKC.js"
     }
   }
 }
