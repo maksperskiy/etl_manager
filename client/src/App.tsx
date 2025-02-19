@@ -4,7 +4,6 @@ import { ReactNode } from 'react'
 import './App.scss'
 import DataSources from './components/DataSources/DataSources'
 import PageWrapper from './components/common/PageWrapper'
-import ModalProvider from './components/providers/ModalProvider/ModalProvider'
 
 interface TabConfig {
   slug: string,
@@ -19,33 +18,28 @@ function App() {
       title: 'Data Sources',
       component: <DataSources />
     },
-    // {
-    //   slug: 'data-builder',
-    //   title: 'Data Builder',
-    //   component: <div />
-    // },
-    // {
-    //   slug: 'manager',
-    //   title: 'Manager',
-    //   component: <DataSources />
-    // },
+    {
+      slug: 'data-builder',
+      title: 'Data Builder',
+      component: <div />
+    },
+    {
+      slug: 'manager',
+      title: 'Manager',
+      component: <div />
+    },
   ];
 
-  return (
-    <>
-      <ModalProvider />
-      <Tabs className="etlm-tabs">
-        <TabList contained>
-          {config.map(item => <Tab key={item.slug}>{ item.title }</Tab>)}
-        </TabList>
-        <TabPanels contained className="etlm-tabs__panels">
-          {config.map(item => <PageWrapper key={item.slug} title={item.title}>
-            {item.component}
-          </PageWrapper>)}
-        </TabPanels>
-      </Tabs>
-    </>
-  )
+  return <Tabs>
+    <TabList contained>
+      {config.map(item => <Tab key={item.slug}>{ item.title }</Tab>)}
+    </TabList>
+    <TabPanels>
+      {config.map(item => <PageWrapper key={item.slug} title={item.title}>
+        {item.component}
+      </PageWrapper>)}
+    </TabPanels>
+  </Tabs>
 }
 
 export default App

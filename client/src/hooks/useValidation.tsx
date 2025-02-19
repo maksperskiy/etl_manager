@@ -1,45 +1,41 @@
-import { useState } from "react";
 
-export interface ValidationError<T = unknown> {
+export interface ValidationError {
   key: string
-  value: T
-  massage: string
+  value: unknown
+  message: string
 }
 
-export type Validator<T extends Record<string, unknown> = Record<string, unknown>> = (key: string, model: T) => true | ValidationError;
+export type Validator<T = Record<string, unknown>> = (key: string, model: T) => true | ValidationError;
 
-export interface ValidationSchema {
-  [key: string]: Validator[]
+export interface ValidationSchema<T> {
+  [key: string]: Validator<T>[]
 }
 
 export interface ValidationErrors {
   [key: string]: ValidationError
 }
 
-export default function useValidation<T extends Record<string, unknown> = Record<string, unknown>>(schema: ValidationSchema = {}) {
-  const [valid, setValid] = useState<boolean>(true);
-  const [errors, setErrors] = useState<ValidationErrors>({});
-
-  const handler = (model: T) => {
-    const newErrors: ValidationErrors = {};
+export default function useValidation<T = Record<string, unknown>>(schema: ValidationSchema<T> = {}) {
+  const validate = (model: T) => {
+    const errors: ValidationErrors = {};
 
     Object.keys(schema).forEach((key) => {
-      schema[key].find((rule: Validator) => {
+      schema[key].find((rule: Validator<T>) => {
         const validatorResult = rule(key, model);
         if (validatorResult !== true) {
-          newErrors[key] = validatorResult;
+          errors[key] = validatorResult;
           return true;
         }
       });
     });
 
-    setErrors(newErrors);
-    setValid(!Object.keys(newErrors).length);
+    return {
+      valid: Object.keys(errors).length === 0,
+      errors,
+      model
+    }
+
   };
 
-  return {
-    valid,
-    errors,
-    handler
-  }
+  return { validate };
 }

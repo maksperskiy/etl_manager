@@ -4,8 +4,6 @@ export default class ApiService {
   #ky: KyInstance;
 
   constructor(ky: KyInstance) {
-    console.log(import.meta.env.VITE_APP_BASE_URL);
-
     this.#ky = ky.create({
       headers: {},
       hooks: {
@@ -15,11 +13,13 @@ export default class ApiService {
       },
       prefixUrl: import.meta.env.VITE_APP_BASE_URL
     })
-
-
   }
 
   get(url: string, options: Options = {}) {
     return this.#ky.get(url, options);
+  }
+
+  post(url: string, options: Options = {}) {
+    return this.#ky.post(url, options);
   }
 }

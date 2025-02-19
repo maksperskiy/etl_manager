@@ -1,13 +1,17 @@
 import './DataSources.scss';
 
-import { Add } from '@carbon/icons-react';
+import { Add, Save } from '@carbon/icons-react';
 import { Button, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@carbon/react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
+import useValidation, { Validator } from "../../hooks/useValidation";
 import dataSourceService from '../../services/data-source';
-import useModalStore from '../../stores/modal';
+import Modal from '../common/Modal/Modal';
 import DataSourceForm, { DataSourceFormModel } from './components/DataSourceForm/DataSourceForm';
 import DateRenderer from './renderers/DateRenderer';
 import { ColumnDef, DataSource } from './types';
+
+import useModalController from '../../hooks/useModalController';
+import { required } from '../../utils/validators';
 
 export default function DataSources() {
   const columnDefs: ColumnDef[] = [
@@ -30,30 +34,26 @@ export default function DataSources() {
     }
   ];
 
-  const { open } = useModalStore();
-  const createModel = useRef({});
+  // const { open } = useModalStore();
+  const [createModel, setCreateModel] = useState<DataSourceFormModel>({});
+  const controller = useModalController();
+
+  const { validate } = useValidation<DataSourceFormModel>({
+    name: [required as Validator<DataSourceFormModel>]
+  });
+
+  const handleSave = async () => {
+    const validationResult = validate(createModel);
+
+    if (validationResult.valid) {
+      const timeout = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+      await timeout(3000);
+      controller.close();
+    }
+  }
 
   const handleAddClick = () => {
-    open({
-      title: 'Add Data Source',
-      component: <DataSourceForm onChange={(model: DataSourceFormModel) => { createModel.current = model; }} />,
-      actions: [
-        {
-          key: 'close',
-          label: 'Close',
-          kind: 'ghost',
-          close: true
-        },
-        {
-          key: 'save',
-          label: 'Save',
-          kind: 'primary',
-          close: true,
-          callback: () => { console.log(createModel.current) }
-        }
-      ],
-      persistent: true
-    });
+    controller.open();
   }
 
   const [dataSources, setDataSources] = useState<DataSource[]>([]);
@@ -67,6 +67,28 @@ export default function DataSources() {
 
   return <div className="etlm-data-sources">
     <Button className="etlm-data-sources__add" renderIcon={Add} onClick={handleAddClick}>Add New Data Source</Button>
+    <Modal
+      controller={controller}
+      title="Add Data Source"
+      actions={[
+        {
+          key: 'cancel',
+          label: 'Cancel',
+          kind: 'ghost',
+          close: true
+        },
+        {
+          key: 'save',
+          label: 'Save',
+          kind: 'primary',
+          close: false,
+          icon: Save,
+          callback: handleSave
+        }
+      ]}
+    >
+      <DataSourceForm onChange={(model) => { setCreateModel(model) }} />
+    </Modal>
     <Table aria-label="sample table">
       <TableHead>
         <TableRow>

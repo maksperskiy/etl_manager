@@ -2,13 +2,14 @@ import { ButtonKind } from '@carbon/react';
 import { ReactElement } from 'react';
 import { create } from 'zustand';
 
-export type ModalActionCallback = () => void;
+export type ModalActionCallback = (close: () => void) => void;
 
 export interface ModalAction {
   key: string
   label: string
   kind: ButtonKind
   callback?: ModalActionCallback
+  disabled?: boolean
   close: boolean
 }
 
