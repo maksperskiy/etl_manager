@@ -1,14 +1,15 @@
-import { FileUploader, Select, SelectItem, TextInput } from "@carbon/react"
-import { ChangeEvent, useRef } from "react"
+import { Checkbox, FileUploader, Select, SelectItem, TextInput } from "@carbon/react"
+import { ChangeEvent, useState } from "react"
 
 import './DataSourceForm.scss'
 
-type DataSourceType = 'file' | 'postgres' | 'mysql' | 's3'
+type DataSourceType = 'FILE' | 'postgres' | 'mysql' | 's3'
 
 export interface DataSourceFormModel {
   name?: string
   source_type?: DataSourceType
-  file?: File
+  upload?: File
+  header?: boolean
 }
 
 interface DataSourceFormProps {
@@ -16,34 +17,56 @@ interface DataSourceFormProps {
   onChange?: (model: DataSourceFormModel) => void
 }
 
-export default function DataSourcetForm({ model = {}, onChange }: DataSourceFormProps) {
-  const state = useRef({ ...model });
+export default function DataSourceForm({ model = {}, onChange }: DataSourceFormProps) {
+  const [state, setState] = useState({
+    source_type: 'FILE',
+    ...model
+  } as DataSourceFormModel);
 
   const HandleChange = <T,>(setter: (event: ChangeEvent<T>) => void) => (event: ChangeEvent<T>) => {
     setter(event);
-    onChange?.(state.current);
+    onChange?.(state);
   }
 
   const handleNameChange = HandleChange<HTMLInputElement>(event => {
-    state.current.name = event.target.value;
+    setState({ ...state, name: event.target.value });
   });
 
   const handleSourceTypeChange = HandleChange<HTMLSelectElement>(event => {
-    state.current.source_type = event.target.value as DataSourceType;
+    setState({ ...state, source_type: event.target.value as DataSourceType });
   });
 
   const handleFileChange = HandleChange<HTMLInputElement>(event => {
-    state.current.file = event.target.files?.[0];
+    setState({
+      ...state,
+      upload: event.target.files?.[0],
+      header: !state.upload?.name.endsWith('.csv')
+    });
+  });
+
+  const handleHeaderChange = HandleChange<HTMLInputElement>(event => {
+    setState({ ...state, header: event.target.checked });
   });
 
   return <form className="data-source-form">
     <TextInput id="name" labelText="Name" value={model.name} onChange={handleNameChange} />
     <Select id="sourceType" labelText="Type" value={model.source_type} onChange={handleSourceTypeChange}>
-      <SelectItem value="file" text="File" />
+      <SelectItem value="FILE" text="File" />
       <SelectItem value="postgres" text="PostgreSQL" />
       <SelectItem value="mysql" text="MySQL" />
       <SelectItem value="s3" text="S3 Bucket" />
     </Select>
-    <FileUploader filenameStatus="edit" name="file" onChange={handleFileChange}></FileUploader>
+    {
+      state.source_type === 'FILE' &&
+      <>
+        <FileUploader
+          filenameStatus="edit"
+          name="upload"
+          accept={['.csv', '.xls', '.xlsx']}
+          onChange={handleFileChange}
+        />
+        { state.upload?.name.endsWith('.csv') && <Checkbox id="header" labelText="Include headers" onChange={handleHeaderChange} /> }
+      </>
+    }
   </form>
 }

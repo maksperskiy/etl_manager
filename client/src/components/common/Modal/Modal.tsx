@@ -45,6 +45,8 @@ export default function Modal ({ title, children, actions, controller }: ModalPr
 
   const handleClose = () => !processing && controller.close()
 
+  const handleBackdrop = () => !processing && controller.backdrop()
+
   return controller.opened && <dialog className="modal" open>
     <div className="modal__header">
       {title && <h4>{ title }</h4>}
@@ -75,7 +77,7 @@ export default function Modal ({ title, children, actions, controller }: ModalPr
     }
     <div
       className="modal__backdrop"
-      onClick={handleClose}
+      onClick={handleBackdrop}
     />
   </dialog>
 }

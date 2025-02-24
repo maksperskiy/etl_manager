@@ -36,7 +36,7 @@ export default function DataSources() {
 
   // const { open } = useModalStore();
   const [createModel, setCreateModel] = useState<DataSourceFormModel>({});
-  const controller = useModalController();
+  const controller = useModalController(true);
 
   const { validate } = useValidation<DataSourceFormModel>({
     name: [required as Validator<DataSourceFormModel>]
@@ -46,8 +46,7 @@ export default function DataSources() {
     const validationResult = validate(createModel);
 
     if (validationResult.valid) {
-      const timeout = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-      await timeout(3000);
+      await dataSourceService.postDataSource(createModel);
       controller.close();
     }
   }
