@@ -1,24 +1,41 @@
-import { useState } from "react";
+import { useState } from 'react'
 
-export default function useModal(persistant: boolean = false) {
-  const [opened, setOpened] = useState(false);
+type ModalEventCallback<T = unknown> = (buffer?: T) => void
 
-  const open = () => {
-    setOpened(true);
+export default function useModal<T>(persistant: boolean = false) {
+  const [opened, setOpened] = useState(false)
+
+  const openCallbacks: ModalEventCallback<T>[] = []
+  const closeCallbacks: ModalEventCallback[] = []
+
+  const open = (buffer?: T) => {
+    openCallbacks.forEach(callback => callback(buffer))
+    setOpened(true)
   }
 
   const close = () => {
-    setOpened(false);
+    closeCallbacks.forEach(callback => callback())
+    setOpened(false)
   }
 
   const backdrop = () => {
-    if (!persistant) setOpened(false);
+    if (!persistant) close()
+  }
+
+  const onOpen = (callback: ModalEventCallback<T>) => {
+    openCallbacks.push(callback)
+  }
+
+  const onClose = (callback: ModalEventCallback) => {
+    closeCallbacks.push(callback)
   }
 
   return {
     opened,
     open,
     close,
-    backdrop
+    backdrop,
+    onOpen,
+    onClose
   }
 }

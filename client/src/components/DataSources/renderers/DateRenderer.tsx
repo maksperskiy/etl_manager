@@ -1,11 +1,13 @@
 import { DataSource, RendererProps } from "../types";
 
 export default function DateRenderer(props: RendererProps) {
-  // const [value, setValue] = useState('');
+  const convert = (dateString: string | number) =>
+    ((date: Date, pad: (value: number) => string) =>
+      `${pad(date.getDate())}.${pad(date.getMonth())}.${date.getFullYear()} ${pad(date.getHours())}:${pad(date.getMinutes())}`
+    )(
+      new Date(dateString),
+      (value: number) => value.toString().padStart(2, '0')
+    );
 
-  // useEffect(() => {
-  //   setValue(new Date(props.dataSource[props.key as keyof DataSource]).toTimeString());
-  // }, []);
-
-  return <>{ new Date(props.dataSource[props.key as keyof DataSource]).toTimeString() }</>;
+  return <>{ props.dataSource[props.key as keyof DataSource] && convert(props.dataSource[props.key as keyof DataSource]) }</>;
 }

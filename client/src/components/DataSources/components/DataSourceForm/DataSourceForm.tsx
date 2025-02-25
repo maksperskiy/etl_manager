@@ -1,4 +1,4 @@
-import { Checkbox, FileUploader, Select, SelectItem, TextInput } from "@carbon/react"
+import { FileUploader, Form, Select, SelectItem, TextInput, Toggle } from "@carbon/react"
 import { ChangeEvent, useState } from "react"
 
 import './DataSourceForm.scss'
@@ -6,6 +6,7 @@ import './DataSourceForm.scss'
 type DataSourceType = 'FILE' | 'postgres' | 'mysql' | 's3'
 
 export interface DataSourceFormModel {
+  pk?: number
   name?: string
   source_type?: DataSourceType
   upload?: File
@@ -44,11 +45,12 @@ export default function DataSourceForm({ model = {}, onChange }: DataSourceFormP
     });
   });
 
-  const handleHeaderChange = HandleChange<HTMLInputElement>(event => {
-    setState({ ...state, header: event.target.checked });
-  });
+  const handleHeaderChange = (checked: boolean) => {
+    setState({ ...state, header: checked });
+    onChange?.(state);
+  }
 
-  return <form className="data-source-form">
+  return <Form className="data-source-form">
     <TextInput id="name" labelText="Name" value={model.name} onChange={handleNameChange} />
     <Select id="sourceType" labelText="Type" value={model.source_type} onChange={handleSourceTypeChange}>
       <SelectItem value="FILE" text="File" />
@@ -63,10 +65,16 @@ export default function DataSourceForm({ model = {}, onChange }: DataSourceFormP
           filenameStatus="edit"
           name="upload"
           accept={['.csv', '.xls', '.xlsx']}
+          labelTitle="Upload file"
+          size="md"
+          labelDescription="Max file size is 50 MB. Only .csv, .xls, xlsx files are supported."
           onChange={handleFileChange}
         />
-        { state.upload?.name.endsWith('.csv') && <Checkbox id="header" labelText="Include headers" onChange={handleHeaderChange} /> }
+        {
+          state.upload?.name.endsWith('.csv') &&
+          <Toggle id="header" labelA="exclude headers" labelB="include headers" onToggle={handleHeaderChange} />
+        }
       </>
     }
-  </form>
+  </Form>
 }

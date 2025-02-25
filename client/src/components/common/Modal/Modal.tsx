@@ -16,21 +16,21 @@ export interface ModalAction {
   icon?: ElementType
 }
 
-export interface ModalController {
+export interface ModalController<T> {
   opened: boolean
-  open: () => void
-  close: () => void
-  backdrop: () => void
+  open: (buffer?: T) => void
+  close: (buffer?: T) => void
+  backdrop: (buffer?: T) => void
 }
 
-export interface ModalProps {
+export interface ModalProps<T> {
   title?: string
   children: ReactNode
   actions: ModalAction[],
-  controller: ModalController
+  controller: ModalController<T>
 }
 
-export default function Modal ({ title, children, actions, controller }: ModalProps) {
+export default function Modal<T> ({ title, children, actions, controller }: ModalProps<T>) {
   const [processing, setProcessing] = useState<boolean>(false);
 
   const HandleActionButtonClick = (action: ModalAction) => async () => {

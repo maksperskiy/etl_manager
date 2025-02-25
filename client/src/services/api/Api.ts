@@ -22,4 +22,8 @@ export default class ApiService {
   post(url: string, options: Options = {}) {
     return this.#ky.post(url, options);
   }
+
+  delete(url: string, options: Options = {}) {
+    return this.#ky.delete(url, options);
+  }
 }

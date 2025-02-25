@@ -25,4 +25,8 @@ export default class DataSourceService {
       body: createModelToFormData(model)
     })
   }
+
+  deleteDataSource(id: number) {
+    return this.#api.delete(`${this.#baseUrl}/${id}/`)
+  }
 }

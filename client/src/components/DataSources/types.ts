@@ -1,6 +1,7 @@
 import { ReactNode } from "react"
 
 export interface DataSource {
+  pk: number
   name: string
   author: number
   file_ext: string
@@ -10,12 +11,17 @@ export interface DataSource {
 }
 
 export interface RendererProps {
-  dataSource: DataSource,
+  dataSource: DataSource
   key: string
 }
 
-export interface ColumnDef {
-  key: string,
-  label: string | null,
-  renderer?: (props: RendererProps) => ReactNode
+export type ExtendedRendererProps<T> = RendererProps & T;
+
+export type Renderer<T> = (props: T) => ReactNode
+
+export interface ColumnDef<T> {
+  key: string
+  label: string | null
+  renderer?: Renderer<ExtendedRendererProps<T>>
+  props?: T
 }
