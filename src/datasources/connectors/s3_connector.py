@@ -1,6 +1,7 @@
 import os
-from pyspark.sql import SparkSession, DataFrame
+
 from django.conf import settings
+from pyspark.sql import DataFrame, SparkSession
 
 from datasources.models.datasource import DataSource
 
@@ -10,7 +11,8 @@ class S3Connector:
         self.data_source = data_source
         self.spark: SparkSession = spark_init.config(
             "spark.jars.packages",
-            "org.apache.hadoop:hadoop-aws:3.3.4,com.amazonaws:aws-java-sdk-bundle:1.12.262",
+            "org.apache.hadoop:hadoop-aws:3.3.4,com.amazonaws:aws-java-sdk-bundle:1.12.262,"
+            "com.crealytics:spark-excel_2.12:0.13.5",
         ).getOrCreate()
 
     def connect(self) -> DataFrame:

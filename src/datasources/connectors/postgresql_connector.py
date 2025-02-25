@@ -1,6 +1,7 @@
 import os
-from pyspark.sql import SparkSession, DataFrame
+
 from django.conf import settings
+from pyspark.sql import DataFrame, SparkSession
 
 from datasources.models.datasource import DataSource
 
