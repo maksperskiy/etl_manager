@@ -1,6 +1,8 @@
 from django.db.models import Q
 from rest_framework import generics, status
 from rest_framework.response import Response
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.permissions import IsAuthenticated
 
 from .models.datasource import (DataSource,  # Replace with your actual model
                                 DataSourceType)
@@ -12,20 +14,28 @@ from .serializers import (DataSourceCommonConfigSerializer,
 class DataSourceListView(generics.ListAPIView):
     queryset = DataSource.objects.all()
     serializer_class = DataSourceListSerializer
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    permission_classes = [IsAuthenticated]
 
 
 class DataSourceCreateView(generics.CreateAPIView):
     queryset = DataSource.objects.all()
     serializer_class = DataSourceCreateSerializer
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    permission_classes = [IsAuthenticated]
 
 
 class DataSourceDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = DataSource.objects.all()
     serializer_class = DataSourceDetailSerializer
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    permission_classes = [IsAuthenticated]
 
 
 class DataSourceCommonConfigView(generics.ListAPIView):
     serializer_class = DataSourceCommonConfigSerializer
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         request = self.request
