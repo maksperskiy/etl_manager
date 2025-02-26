@@ -4,18 +4,33 @@ from rest_framework.response import Response
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
 
-from .models.datasource import (DataSource,  # Replace with your actual model
-                                DataSourceType)
-from .serializers import (DataSourceCommonConfigSerializer,
-                          DataSourceCreateSerializer,
-                          DataSourceDetailSerializer, DataSourceListSerializer)
+from .models.datasource import (
+    DataSource,  # Replace with your actual model
+    DataSourceType,
+)
+from .serializers import (
+    DataSourceCommonConfigSerializer,
+    DataSourceCreateSerializer,
+    DataSourceDetailSerializer,
+    DataSourceListSerializer,
+)
 
 
 class DataSourceListView(generics.ListAPIView):
-    queryset = DataSource.objects.all()
     serializer_class = DataSourceListSerializer
     authentication_classes = [SessionAuthentication, BasicAuthentication]
     permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        request = self.request
+        queryset = DataSource.objects.all()
+        if not request.user.is_superuser:
+            query = Q(
+                Q(author=request.user.pk)
+                | Q(users_with_access__pk__contains=request.user.pk)
+            )
+            queryset = queryset.filter(query)
+        return queryset.all()
 
 
 class DataSourceCreateView(generics.CreateAPIView):
@@ -26,10 +41,20 @@ class DataSourceCreateView(generics.CreateAPIView):
 
 
 class DataSourceDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = DataSource.objects.all()
     serializer_class = DataSourceDetailSerializer
     authentication_classes = [SessionAuthentication, BasicAuthentication]
     permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        request = self.request
+        queryset = DataSource.objects.all()
+        if not request.user.is_superuser:
+            query = Q(
+                Q(author=request.user.pk)
+                | Q(users_with_access__pk__contains=request.user.pk)
+            )
+            queryset = queryset.filter(query)
+        return queryset.all()
 
 
 class DataSourceCommonConfigView(generics.ListAPIView):
@@ -39,12 +64,14 @@ class DataSourceCommonConfigView(generics.ListAPIView):
 
     def get_queryset(self):
         request = self.request
-        query = Q(
-            Q(author=request.user.pk)
-            | Q(users_with_access__pk__contains=request.user.pk)
-        )
-        queryset = DataSource.objects.filter(query)
-        return queryset
+        queryset = DataSource.objects.all()
+        if not request.user.is_superuser:
+            query = Q(
+                Q(author=request.user.pk)
+                | Q(users_with_access__pk__contains=request.user.pk)
+            )
+            queryset = queryset.filter(query)
+        return queryset.all()
 
     def list(self, request, *args, **kwargs):
         source_type = self.kwargs.get("source_type")
