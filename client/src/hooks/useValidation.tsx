@@ -1,3 +1,4 @@
+import { useState } from "react";
 
 export interface ValidationError {
   key: string
@@ -16,26 +17,28 @@ export interface ValidationErrors {
 }
 
 export default function useValidation<T = Record<string, unknown>>(schema: ValidationSchema<T> = {}) {
+  const [valid, setValid] = useState<boolean>(true);
+  const [errors, setErrors] = useState<ValidationErrors>({});
+
   const validate = (model: T) => {
-    const errors: ValidationErrors = {};
+    const newErrors: ValidationErrors = {};
 
     Object.keys(schema).forEach((key) => {
       schema[key].find((rule: Validator<T>) => {
         const validatorResult = rule(key, model);
         if (validatorResult !== true) {
-          errors[key] = validatorResult;
+          newErrors[key] = validatorResult;
           return true;
         }
       });
     });
 
-    return {
-      valid: Object.keys(errors).length === 0,
-      errors,
-      model
-    }
+    setErrors(newErrors);
+    const newValid = Object.keys(newErrors).length === 0;
+    setValid(newValid);
 
+    return newValid;
   };
 
-  return { validate };
+  return { validate, errors, valid };
 }

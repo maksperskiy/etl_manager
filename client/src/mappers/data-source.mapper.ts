@@ -13,8 +13,17 @@ export const createModelToFormData: (model: DataSourceFormModel) => FormData = (
   return formData;
 }
 
+export const editModelToFormData: (model: DataSourceFormModel) => FormData = (model: DataSourceFormModel) => {
+  const formData = new FormData();
+
+  formData.append('name', model.name as string);
+
+  return formData;
+}
+
 export const dataSourceToEditModel: (model: DataSource) => DataSourceFormModel = (model: DataSource) => {
   return {
+    pk: model.pk,
     name: model.name,
     source_type: model.source_type
   } as DataSourceFormModel;

@@ -3,7 +3,7 @@ import './DataSources.scss';
 import { Add, Save, TrashCan } from '@carbon/icons-react';
 import { Button, Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@carbon/react';
 import { useEffect, useState } from 'react';
-import useValidation, { Validator } from "../../hooks/useValidation";
+import useValidation from "../../hooks/useValidation";
 import dataSourceService from '../../services/data-source';
 import Modal from '../common/Modal/Modal';
 import DataSourceForm, { DataSourceFormModel } from './components/DataSourceForm/DataSourceForm';
@@ -11,11 +11,9 @@ import DateRenderer from './renderers/DateRenderer';
 import { ColumnDef, DataSource, ExtendedRendererProps } from './types';
 
 import useModalController from '../../hooks/useModalController';
-import { dataSourceToEditModel } from '../../mappers/data-source.mapper';
+import { createModelToFormData, dataSourceToEditModel, editModelToFormData } from '../../mappers/data-source.mapper';
 import { required } from '../../utils/validators';
-import ActionsRenderer, { ActionsRendererProps } from './renderers/ActionsRenderer';
-
-
+import ActionsRenderer, { ActionsRendererProps } from './renderers/ActionsRenderer/ActionsRenderer';
 
 export default function DataSources() {
   const addModalController = useModalController(true);
@@ -63,19 +61,26 @@ export default function DataSources() {
       key: 'actions',
       label: null,
       renderer: ActionsRenderer,
-      props: { deleteModalController, editModalController }
+      props: { deleteModalController, editModalController },
+      class: 'etlm-data-sources__table--actions'
     }
   ];
 
   const { validate } = useValidation<DataSourceFormModel>({
-    name: [required as Validator<DataSourceFormModel>]
+    name: [required]
   });
 
-  const handleSave = async () => {
-    const validationResult = validate(createModel);
+  const handleCreate = async () => {
+    if (validate(createModel)) {
+      await dataSourceService.postDataSource(createModelToFormData(createModel));
+      addModalController.close();
+      fetchDataSources();
+    }
+  }
 
-    if (validationResult.valid) {
-      await dataSourceService.postDataSource(createModel);
+  const handleSave = async () => {
+    if (validate(editModel)) {
+      await dataSourceService.patchDataSource(editModel.pk!, editModelToFormData(editModel));
       addModalController.close();
       fetchDataSources();
     }
@@ -117,12 +122,12 @@ export default function DataSources() {
           close: true
         },
         {
-          key: 'save',
-          label: 'Save',
+          key: 'create',
+          label: 'Create',
           kind: 'primary',
           close: false,
           icon: Save,
-          callback: handleSave
+          callback: handleCreate
         }
       ]}
     >
@@ -148,7 +153,7 @@ export default function DataSources() {
         }
       ]}
     >
-      <DataSourceForm model={editModel} onChange={(model) => { setEditModel(model) }} />
+      <DataSourceForm model={editModel} onChange={(model) => { setEditModel(model) }} edit />
     </Modal>
     <Modal
       controller={deleteModalController}
@@ -180,7 +185,7 @@ export default function DataSources() {
       </TableHead>
       <TableBody>
         {dataSources.map(src => <TableRow key={src.name}>
-          {columnDefs.map(def => <TableCell  key={def.key}>
+          {columnDefs.map(def => <TableCell className={def.class} key={def.key}>
             { def.renderer ? def.renderer({ dataSource: src, key: def.key, ...(def.props || {} as ExtendedRendererProps<ActionsRendererProps>) }) : src[def.key as keyof DataSource] }
           </TableCell>)}
         </TableRow>)}

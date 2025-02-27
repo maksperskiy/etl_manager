@@ -1,7 +1,9 @@
 import { Edit, TrashCan } from "@carbon/icons-react";
 import { Button } from "@carbon/react";
-import { ModalController } from "../../common/Modal/Modal";
-import { DataSource, ExtendedRendererProps } from "../types";
+import { ModalController } from "../../../common/Modal/Modal";
+import { DataSource, ExtendedRendererProps } from "../../types";
+
+import './ActionsRenderer.scss';
 
 export interface ActionsRendererProps {
   editModalController: ModalController<DataSource>
@@ -17,7 +19,7 @@ export default function ActionsRenderer(props: ExtendedRendererProps<ActionsRend
     props.editModalController.open(props.dataSource);
   }
   return <><div className="etlm-data-source-actions">
-    <Button kind="ghost" renderIcon={Edit} iconDescription="Edit Data Source" hasIconOnly onClick={handleEditClick} />
-    <Button kind="danger--ghost" renderIcon={TrashCan} iconDescription="Delete Data Source" hasIconOnly onClick={handleDeleteClick} />
+    <Button kind="ghost" renderIcon={Edit} iconDescription="Edit" hasIconOnly onClick={handleEditClick} />
+    <Button kind="danger--ghost" renderIcon={TrashCan} iconDescription="Delete" hasIconOnly onClick={handleDeleteClick} />
   </div></>
 }

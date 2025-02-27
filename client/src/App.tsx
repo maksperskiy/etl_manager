@@ -2,8 +2,9 @@
 import { Tab, TabList, TabPanels, Tabs } from '@carbon/react'
 import { ReactNode } from 'react'
 import './App.scss'
-import DataSources from './components/DataSources/DataSources'
 import PageWrapper from './components/common/PageWrapper'
+import DataSources from './components/DataSources/DataSources'
+import Router from './Router'
 
 interface TabConfig {
   slug: string,
@@ -29,6 +30,8 @@ function App() {
       component: <div />
     },
   ];
+
+  return <Router />
 
   return <Tabs>
     <TabList contained>

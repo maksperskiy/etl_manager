@@ -23,6 +23,10 @@ export default class ApiService {
     return this.#ky.post(url, options);
   }
 
+  patch(url: string, options: Options = {}) {
+    return this.#ky.patch(url, options);
+  }
+
   delete(url: string, options: Options = {}) {
     return this.#ky.delete(url, options);
   }

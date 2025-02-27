@@ -1,5 +1,5 @@
 import { CloseLarge } from "@carbon/icons-react";
-import { Button, ButtonKind } from '@carbon/react';
+import { Button, ButtonKind, ProgressBar } from '@carbon/react';
 import { ElementType, ReactNode, useState } from 'react';
 
 import './Modal.scss';
@@ -59,6 +59,7 @@ export default function Modal<T> ({ title, children, actions, controller }: Moda
         onClick={handleClose}
       />
     </div>
+    { processing && <ProgressBar label="" hideLabel /> }
     <div className="modal__body">
       {children}
     </div>

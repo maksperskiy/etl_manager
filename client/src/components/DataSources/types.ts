@@ -24,4 +24,5 @@ export interface ColumnDef<T> {
   label: string | null
   renderer?: Renderer<ExtendedRendererProps<T>>
   props?: T
+  class?: string
 }
