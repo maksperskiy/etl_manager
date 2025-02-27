@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('datasources', '0006_alter_datasource_created_at'),
+        ("datasources", "0006_alter_datasource_created_at"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='datasource',
-            name='name',
+            model_name="datasource",
+            name="name",
             field=models.CharField(max_length=255, unique=True),
         ),
     ]
