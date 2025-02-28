@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models.datasource import DataSource
+from ..models.datasource import DataSource
 
 
 class DataSourceDetailSerializer(serializers.ModelSerializer):
@@ -58,10 +58,6 @@ class DataSourceCreateSerializer(serializers.ModelSerializer):
             ):
                 raise serializers.ValidationError("File is not supported.")
             
-        if request := self.context.get("request"):
-            data["author"] = request.user.pk
+        # if request := self.context.get("request"):
+        #     data["author"] = request.user.pk
         return data
-
-
-class DataSourceCommonConfigSerializer(serializers.Serializer):
-    config = serializers.JSONField()
