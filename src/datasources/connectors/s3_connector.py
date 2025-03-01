@@ -7,15 +7,22 @@ from datasources.models.datasource import DataSource
 
 
 class S3Connector:
-    def __init__(self, spark_init: SparkSession.Builder, data_source: DataSource):
+    def __init__(self, session_builder: SparkSession.Builder, data_source: DataSource):
         self.data_source = data_source
-        self.spark: SparkSession = spark_init.config(
+        self.session_builder: SparkSession.Builder = (
+            self.set_sparksessionbuilder_config(session_builder)
+        )
+
+    @classmethod
+    def set_sparksessionbuilder_config(cls, sparksessionbuilder: SparkSession.Builder):
+        return sparksessionbuilder.config(
             "spark.jars.packages",
             "org.apache.hadoop:hadoop-aws:3.3.4,com.amazonaws:aws-java-sdk-bundle:1.12.262,"
             "com.crealytics:spark-excel_2.12:0.13.5",
-        ).getOrCreate()
+        )
 
-    def connect(self) -> DataFrame:
+    def get_dataframe(self) -> DataFrame:
+        spark = self.session_builder.getOrCreate()
         config = self.data_source.config.copy()
         if self.data_source.upload:
             s3_path = f"{self.data_source.upload.name}"
@@ -45,29 +52,29 @@ class S3Connector:
         s3_path = f"s3a://{bucket}/{path}"
 
         # Настройка Spark для работы с MinIO
-        self.spark._jsc.hadoopConfiguration().set("fs.s3a.access.key", access_key)
-        self.spark._jsc.hadoopConfiguration().set("fs.s3a.secret.key", secret_key)
-        self.spark._jsc.hadoopConfiguration().set(
+        spark._jsc.hadoopConfiguration().set("fs.s3a.access.key", access_key)
+        spark._jsc.hadoopConfiguration().set("fs.s3a.secret.key", secret_key)
+        spark._jsc.hadoopConfiguration().set(
             "com.amazonaws.services.s3.enableV4", "true"
         )
-        self.spark._jsc.hadoopConfiguration().set("fs.s3a.path.style.access", "true")
-        self.spark._jsc.hadoopConfiguration().set("fs.s3a.endpoint", endpoint_url)
-        self.spark._jsc.hadoopConfiguration().set("fs.s3a.endpoint.region", region_name)
-        self.spark._jsc.hadoopConfiguration().set(
+        spark._jsc.hadoopConfiguration().set("fs.s3a.path.style.access", "true")
+        spark._jsc.hadoopConfiguration().set("fs.s3a.endpoint", endpoint_url)
+        spark._jsc.hadoopConfiguration().set("fs.s3a.endpoint.region", region_name)
+        spark._jsc.hadoopConfiguration().set(
             "fs.s3a.aws.credentials.provider",
             "org.apache.hadoop.fs.s3a.SimpleAWSCredentialsProvider",
         )
 
         # Чтение данных в зависимости от типа
         if file_type == "csv":
-            return self.spark.read.csv(s3_path, **config.get("options", {}))
+            return spark.read.csv(s3_path, **config.get("options", {}))
         elif file_type == "json":
-            return self.spark.read.json(s3_path, **config.get("options", {}))
+            return spark.read.json(s3_path, **config.get("options", {}))
         elif file_type == "parquet":
-            return self.spark.read.parquet(s3_path)
+            return spark.read.parquet(s3_path)
         elif file_type in ["xlsx", "xls"]:
             return (
-                self.spark.read.format("com.crealytics.spark.excel")
+                spark.read.format("com.crealytics.spark.excel")
                 .option("header", "true")
                 .load(s3_path)
             )

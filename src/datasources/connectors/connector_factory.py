@@ -15,14 +15,16 @@ class DataSourceConnectorFactory:
             settings.SPARK_MASTER_URL
         ).appName(f"{data_source.name}-{data_source.id}")
 
-    def get_connector(self):
+    def get_connector(self, session_builder=None):
+        if not session_builder:
+            session_builder = self.spark_init
         source_type = self.data_source.source_type
 
         if source_type == "POSTGRES":
-            return PostgresqlConnector(self.spark_init, self.data_source)
+            return PostgresqlConnector(session_builder, self.data_source)
         elif source_type == "MYSQL":
-            return MysqlConnector(self.spark_init, self.data_source)
+            return MysqlConnector(session_builder, self.data_source)
         elif source_type in ["FILE", "S3"]:
-            return S3Connector(self.spark_init, self.data_source)
+            return S3Connector(session_builder, self.data_source)
         else:
             raise ValueError("Unsupported data source type")

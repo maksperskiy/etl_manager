@@ -7,13 +7,20 @@ from datasources.models.datasource import DataSource
 
 
 class PostgresqlConnector:
-    def __init__(self, spark_init: SparkSession.Builder, data_source: DataSource):
+    def __init__(self, session_builder: SparkSession.Builder, data_source: DataSource):
         self.data_source = data_source
-        self.spark: SparkSession = spark_init.config(
-            "spark.jars.packages", "org.postgresql:postgresql:42.7.0"
-        ).getOrCreate()
+        self.session_builder: SparkSession.Builder = (
+            self.set_sparksessionbuilder_config(session_builder)
+        )
 
-    def connect(self) -> DataFrame:
+    @classmethod
+    def set_sparksessionbuilder_config(cls, sparksessionbuilder: SparkSession.Builder):
+        return sparksessionbuilder.config(
+            "spark.jars.packages", "org.postgresql:postgresql:42.7.0"
+        )
+
+    def get_dataframe(self) -> DataFrame:
+        spark = self.session_builder.getOrCreate()
         config = self.data_source.config.copy()
         jdbc_url = (
             f"jdbc:postgresql://{config['host']}:{config['port']}/{config['database']}"
@@ -29,4 +36,4 @@ class PostgresqlConnector:
             table = f"({config['query']}) as tmp"
         else:
             table = config["table"]
-        return self.spark.read.jdbc(url=jdbc_url, table=table, properties=properties)
+        return spark.read.jdbc(url=jdbc_url, table=table, properties=properties)

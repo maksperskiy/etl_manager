@@ -1,0 +1,26 @@
+OrderItemID,OrderID,ProductName,Quantity,Price
+1001,101,Wireless Mouse,2,25.00
+1002,101,Keyboard,1,100.00
+1003,102,Monitor,1,200.00
+1004,103,USB-C Cable,3,10.00
+1005,103,Adapter,1,69.99
+1006,104,Laptop Stand,1,50.50
+1007,104,External SSD,1,200.00
+1008,105,Headphones,1,120.00
+1009,106,Mouse Pad,1,15.00
+1010,106,Desk Lamp,1,60.00
+1011,107,Gaming Chair,1,300.00
+1012,108,Webcam,1,80.00
+1013,108,Microphone,1,100.00
+1014,109,Smartwatch,1,95.00
+1015,110,Tablet,1,220.00
+1016,111,Printer,1,130.00
+1017,112,Scanner,1,140.00
+1018,113,Projector,1,160.00
+1019,114,Speaker,1,90.00
+1020,115,Earbuds,1,110.00
+1021,116,Charger,1,85.00
+1022,117,Smart Home Hub,1,200.00
+1023,118,Smart Bulb,5,35.00
+1024,119,Smart Plug,3,25.00
+1025,120,Smart Thermostat,1,210.00

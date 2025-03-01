@@ -37,11 +37,11 @@ class DataSource(models.Model):
     def __str__(self):
         return self.name
 
-    def get_connection(self):
+    def get_connection(self, session_builder):
         from ..connectors.connector_factory import DataSourceConnectorFactory
 
         connector = DataSourceConnectorFactory(self)
-        return connector.get_connector().connect()
+        return connector.get_connector(session_builder=session_builder).get_dataframe()
 
     def set_schema(self):
         self.schema = json.loads(self.get_connection().schema.json())

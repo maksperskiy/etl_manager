@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     # Your apps
     "common",
     "datasources",
+    "databuilders",
     # Third-party apps
     "django_json_widget",
     "django_celery_beat",
