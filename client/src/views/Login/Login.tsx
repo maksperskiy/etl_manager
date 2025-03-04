@@ -2,13 +2,15 @@ import { Login } from "@carbon/icons-react";
 import { Button, Form, PasswordInput, ProgressBar, TextInput } from "@carbon/react";
 
 import { ChangeEvent, useState } from "react";
+import { Link, useNavigate } from "react-router";
 import useValidation from "../../hooks/useValidation";
-import authService from "../../services/auth";
+import commonService from "../../services/common";
+import useUserStore, { User } from "../../stores/user";
 import { required } from "../../utils/validators";
 import './Login.scss';
 
-interface LoginFormModel {
-  login?: string
+export interface LoginFormModel {
+  username?: string
   password?: string
 }
 
@@ -16,25 +18,32 @@ export default function LoginView() {
   const [model, setModel] = useState<LoginFormModel>({});
   const [processing, setProcessing] = useState<boolean>(false);
 
+  const { setUser, user } = useUserStore(store => store);
+  const navigate = useNavigate();
+
+  console.log(user)
+
   const { validate, errors } = useValidation<LoginFormModel>({
-    login: [required],
+    username: [required],
     password: [required]
   })
 
-  const handleLoginChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setModel({ ...model, login: event.target.value })
+  const handleUsernameChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setModel({ ...model, username: event.target.value })
   }
 
   const handlePasswordChange = (event: ChangeEvent<HTMLInputElement>) => {
     setModel({ ...model, password: event.target.value })
   }
 
-  const handleSignIn = async () => {
+  const handleLogin = async () => {
     if (validate(model)) {
       setProcessing(true);
 
       try {
-        await authService.login<LoginFormModel>(model)
+        const res = await commonService.login(model)
+        setUser(((data: User) => ({ email: data.email, user_id: data.user_id, username: data.username }))(await res.json()))
+        navigate('/')
       } finally {
         setProcessing(false);
       }
@@ -44,12 +53,12 @@ export default function LoginView() {
   return <>
     { processing && <ProgressBar className="etlm-login--progress" label="" hideLabel /> }
     <div className="etlm-login">
-
       <Form>
-        <TextInput id="login" labelText="Login" onChange={handleLoginChange} warn={!!errors?.login} warnText={errors?.login?.message} disabled={processing} />
+        <TextInput id="login" labelText="Username" onChange={handleUsernameChange} warn={!!errors?.login} warnText={errors?.login?.message} disabled={processing} />
         <PasswordInput id="password" labelText="Password" onChange={handlePasswordChange} warn={!!errors?.password} warnText={errors?.password?.message} disabled={processing} />
-        <Button renderIcon={Login} onClick={handleSignIn} disabled={processing}>Sign In</Button>
+        <Button renderIcon={Login} onClick={handleLogin} disabled={processing}>Login</Button>
       </Form>
+      <p>Have no account yet? <Link to='/register'>Register here</Link></p>
     </div>
   </>
 }

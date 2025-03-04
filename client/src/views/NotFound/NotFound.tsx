@@ -3,7 +3,7 @@ import { Button } from '@carbon/react'
 import { Link } from 'react-router'
 import './NotFound.scss'
 
-export default function NotFound() {
+export default function NotFoundView() {
   return <div className="etlm-not-found">
     <h1>404</h1>
     <h2>Page Not Found</h2>

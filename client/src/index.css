@@ -1,3 +1,21 @@
+:root {
+    --primary: #5F05B3;
+    --accent: #EC368D;
+    --accent-active: #F6A2CB;
+    --success: #04724D;
+
+    --cds-focus: var(--accent);
+    --cds-button-primary: var(--primary);
+    --cds-button-primary-hover: var(--accent);
+    --cds-button-primary-active: var(--accent-active);
+    --cds-button-tertiary: var(--accent);
+    --cds-button-tertiary-hover: var(--accent);
+    --cds-button-tertiary-active: var(--accent-active);
+    --cds-link-primary:var(--primary);
+    --cds-link-primary-hover: var(--accent);
+    --cds-support-success: var(--success);
+}
+
 body {
     height: 100vh;
 }

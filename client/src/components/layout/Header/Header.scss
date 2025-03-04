@@ -1,0 +1,11 @@
+.etlm-header {
+    background-color: var(--cds-button-primary, #0f62fe);
+    padding: 0 24px;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+
+    &__menu-button {
+        margin-left: auto;
+    }
+}

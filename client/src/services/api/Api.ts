@@ -11,7 +11,8 @@ export default class ApiService {
           () => console.log('before')
         ]
       },
-      prefixUrl: import.meta.env.VITE_APP_BASE_URL
+      prefixUrl: import.meta.env.VITE_APP_BASE_URL,
+      credentials: 'include'
     })
   }
 

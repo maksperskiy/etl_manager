@@ -10,8 +10,8 @@ export default class DataSourceService {
     this.#api = api;
   }
 
-  getDataSource(id: string): ResponsePromise<DataSource> {
-    return this.#api.get(this.#baseUrl, { searchParams: { id } });
+  getDataSource(pk: string): ResponsePromise<DataSource> {
+    return this.#api.get(this.#baseUrl, { searchParams: { pk } });
   }
 
   getDataSources(): ResponsePromise<DataSource[]> {
