@@ -14,8 +14,16 @@ interface UserStore extends UserStoreState {
   setUser: (user: User) => void
 }
 
+const getUserFromLocalStorage = () => ((username: string | null) => username
+  ? ({
+    username,
+    email: localStorage.getItem('user.email'),
+    user_id: localStorage.getItem('user.user_id')
+  } as unknown as User)
+  : null)(localStorage.getItem('user.username'));
+
 const useUserStore = create<UserStore>((set) => ({
-  user: null,
+  user: getUserFromLocalStorage(),
   setUser: (user: User) => set(() => ({ user })),
 }))
 

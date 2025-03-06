@@ -18,10 +18,8 @@ export default function LoginView() {
   const [model, setModel] = useState<LoginFormModel>({});
   const [processing, setProcessing] = useState<boolean>(false);
 
-  const { setUser, user } = useUserStore(store => store);
+  const { setUser } = useUserStore(store => store);
   const navigate = useNavigate();
-
-  console.log(user)
 
   const { validate, errors } = useValidation<LoginFormModel>({
     username: [required],

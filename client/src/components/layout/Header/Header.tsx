@@ -22,7 +22,7 @@ export default function Header() {
     <Link to="/data-sources"><Button>Data Sources</Button></Link>
     <Link to="/data-builder"><Button>Data Builder</Button></Link>
     <Link to="/manager"><Button>Manager</Button></Link>
-    <MenuButton className="etlm-header__menu-button" label={user?.username} menuAlignment="bottom">
+    <MenuButton className="etlm-header__menu-button" label={user?.username || ''} menuAlignment="bottom">
       <MenuItem label="Settings" renderIcon={Settings} onClick={handleSettingsClick}></MenuItem>
       <MenuItem label="Logout" renderIcon={Logout} onClick={handleLogoutClick}></MenuItem>
     </MenuButton>
