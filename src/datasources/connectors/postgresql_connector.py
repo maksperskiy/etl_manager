@@ -16,7 +16,7 @@ class PostgresqlConnector:
     @classmethod
     def set_sparksessionbuilder_config(cls, sparksessionbuilder: SparkSession.Builder):
         return sparksessionbuilder.config(
-            "spark.jars.packages", "org.postgresql:postgresql:42.7.0"
+            "spark.jars", "/opt/bitnami/spark/jars/postgresql-42.7.5.jar"
         )
 
     def get_dataframe(self) -> DataFrame:

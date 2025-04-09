@@ -6,12 +6,15 @@ from django.conf import settings
 from pyspark.sql import SparkSession
 
 from databuilders.builder import ETLPipeline
+from .sample import DataSample
 from ..encoders import PrettyJSONEncoder
+from ..tasks import set_sample
 
 
 class DataBuilder(models.Model):
     name = models.CharField(max_length=255, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     config = models.JSONField(encoder=PrettyJSONEncoder, blank=True)
     author = models.ForeignKey(
         User,
@@ -29,6 +32,8 @@ class DataBuilder(models.Model):
         "datasources.DataSource", blank=True, related_name="uses_databuilders"
     )
     databuilders = models.ManyToManyField("self", blank=True)
+
+    sample = models.OneToOneField(DataSample, blank=True, null=True, on_delete=models.SET_NULL)
 
     @property
     def spark_session_builder(self):
@@ -96,4 +101,12 @@ class DataBuilder(models.Model):
         return pipeline.run()
 
     def get_dataframe_head(self, size: int = 10):
-        return self.build_dataframe().limit(size)
+        if self.sample and self.sample.data and self.sample.created_at > self.updated_at:        
+            return dict(status="OK", **self.sample.data)
+        elif self.sample and not self.sample.data: 
+            ...
+        else:
+            if self.sample:
+                self.sample.delete()
+            set_sample.delay(self.pk, size)
+        return {"status": "Waiting for build test sample..."}

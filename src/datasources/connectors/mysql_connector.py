@@ -16,7 +16,7 @@ class MysqlConnector:
     @classmethod
     def set_sparksessionbuilder_config(cls, sparksessionbuilder: SparkSession.Builder):
         return sparksessionbuilder.config(
-            "spark.jars.packages", "mysql:mysql-connector-java:8.0.11"
+            "spark.jars", "/opt/bitnami/spark/jars/mysql-connector-java-8.0.33.jar"
         )
 
     def get_dataframe(self) -> DataFrame:

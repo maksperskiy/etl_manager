@@ -14,6 +14,15 @@ x-minio-common: &minio-common
 
 services:
 
+  cloudpub:
+    image: cloudpub/cloudpub:latest
+    environment:
+      TOKEN: ${CLOUDPUB_TOKEN}
+    command: publish http backend:8000
+    restart: always
+    depends_on:
+      - backend
+
   backend:
     container_name: backend
     build:
@@ -28,13 +37,13 @@ services:
     stdin_open: true
     environment:
       - PYTHONUNBUFFERED=1
-      - SPARK_MASTER_URL=spark://spark-master:7077
     restart: always
     tty: true
     ports:
       - "8000:8000"
     volumes:
       - ./src:/opt/app
+      - spark-jars:/opt/bitnami/spark/jars
     depends_on:
       - postgres
       - spark-master
@@ -51,6 +60,9 @@ services:
       - ./.env
     command: celery -A core worker --beat --scheduler django
     restart: always
+    volumes:
+      - ./src:/opt/app
+      - spark-jars:/opt/bitnami/spark/jars
     depends_on:
       - rabbitmq
       - redis
@@ -140,6 +152,7 @@ services:
       - SPARK_MODE=master
     volumes:
       - spark-events:/opt/bitnami/spark/events
+      - spark-jars:/opt/bitnami/spark/jars
 
   spark-worker:
     build:
@@ -153,6 +166,7 @@ services:
       - SPARK_MASTER_URL=spark://spark-master:7077
     volumes:
       - spark-events:/opt/bitnami/spark/events
+      - spark-jars:/opt/bitnami/spark/jars
     depends_on:
       - spark-master
 
@@ -164,3 +178,4 @@ volumes:
   data2-1:
   data2-2:
   spark-events:
+  spark-jars:

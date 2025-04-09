@@ -16,9 +16,9 @@ class S3Connector:
     @classmethod
     def set_sparksessionbuilder_config(cls, sparksessionbuilder: SparkSession.Builder):
         return sparksessionbuilder.config(
-            "spark.jars.packages",
-            "org.apache.hadoop:hadoop-aws:3.3.4,com.amazonaws:aws-java-sdk-bundle:1.12.262,"
-            "com.crealytics:spark-excel_2.12:0.13.5",
+            "spark.jars",
+            "/opt/bitnami/spark/jars/hadoop-aws-3.3.4.jar,/opt/bitnami/spark/jars/aws-java-sdk-bundle-1.12.262.jar,"
+            "/opt/bitnami/spark/jars/spark-excel_2.12-0.13.1.jar",
         )
 
     def get_dataframe(self) -> DataFrame:

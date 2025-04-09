@@ -71,10 +71,6 @@ class DataBuilderTestView(generics.RetrieveAPIView):
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
-        df = instance.get_dataframe_head()
+        result = instance.get_dataframe_head()
 
-        headers = df.columns
-        data = df.collect()
-
-        result = {"headers": headers, "data": [list(row) for row in data]}
         return Response(result)

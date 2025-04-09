@@ -9,11 +9,15 @@ from .s3_connector import S3Connector
 
 
 class DataSourceConnectorFactory:
+
     def __init__(self, data_source):
         self.data_source = data_source
-        self.spark_init = SparkSession.builder.master(
-            settings.SPARK_MASTER_URL
-        ).appName(f"{data_source.name}-{data_source.id}")
+        self.spark_init = (
+            SparkSession.builder.master(settings.SPARK_MASTER_URL)
+            .config("spark.driver.extraClassPath", "/opt/bitnami/spark/jars/*")
+            .config("spark.executor.extraClassPath", "/opt/bitnami/spark/jars/*")
+            .appName(f"{data_source.name}-{data_source.id}")
+        )
 
     def get_connector(self, session_builder=None):
         if not session_builder:
