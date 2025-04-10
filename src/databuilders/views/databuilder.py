@@ -5,6 +5,7 @@ from rest_framework.authentication import SessionAuthentication, BasicAuthentica
 from rest_framework.permissions import IsAuthenticated
 
 from databuilders.models import DataBuilder
+from databuilders.tasks import refresh_schema
 from databuilders.serializers import (
     DataBuilderCreateSerializer,
     DataBuilderDetailSerializer,
@@ -74,3 +75,25 @@ class DataBuilderTestView(generics.RetrieveAPIView):
         result = instance.get_dataframe_head()
 
         return Response(result)
+
+
+class DataBuilderRefreshSchemaView(generics.RetrieveAPIView):
+    serializer_class = DataBuilderDetailSerializer
+    # authentication_classes = [SessionAuthentication, BasicAuthentication]
+    # permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        request = self.request
+        queryset = DataBuilder.objects.all()
+        # if not request.user.is_superuser:
+        #     query = Q(
+        #         Q(author=request.user.pk)
+        #         | Q(users_with_access__pk__contains=request.user.pk)
+        #     )
+        #     queryset = queryset.filter(query)
+        return queryset.all()
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        refresh_schema.delay(instance.pk)
+        return Response({"details": "Schema refresh started"}, status=status.HTTP_200_OK)

@@ -85,3 +85,5 @@ yarn-error.log*
 temp.*
 .trash
 .python-version
+
+/src/static

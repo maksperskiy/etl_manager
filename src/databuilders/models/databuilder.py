@@ -97,6 +97,7 @@ class DataBuilder(models.Model):
             config=self.combine_configs(),
             input_dataframes=self.get_related_datasources(),
             spark_session_builder=self.spark_session_builder,
+            result_df_name=self.name,
         )
         return pipeline.run()
 
@@ -110,3 +111,8 @@ class DataBuilder(models.Model):
                 self.sample.delete()
             set_sample.delay(self.pk, size)
         return {"status": "Waiting for build test sample..."}
+
+    def set_schema(self):
+        self.schema = json.loads(self.build_dataframe().schema.json())
+        self.save()
+        return self.schema

@@ -39,7 +39,9 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "corsheaders",
     "rest_framework",
+    "drf_yasg",
     # Your apps
     "common",
     "datasources",
@@ -49,7 +51,6 @@ INSTALLED_APPS = [
     "django_celery_beat",
     "storages",
     "django_extensions",
-    "corsheaders",
 ]
 
 MIDDLEWARE = [
@@ -71,6 +72,24 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
 ]  # If this is used, then not need to use `CORS_ALLOW_ALL_ORIGINS = True`
 ALLOWED_HOSTS = ["*"]
+
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = True  # Only if you want to force HTTPS
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+
 
 ROOT_URLCONF = "core.urls"
 
@@ -165,11 +184,15 @@ STORAGES = {
         "BACKEND": "storages.backends.s3.S3Storage",
         "OPTIONS": {**config},
     },
+    # "staticfiles": {
+    #     "BACKEND": "storages.backends.s3.S3Storage",
+    #     "OPTIONS": {**config},
+    # },
     "staticfiles": {
-        "BACKEND": "storages.backends.s3.S3Storage",
-        "OPTIONS": {**config},
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
     },
 }
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/

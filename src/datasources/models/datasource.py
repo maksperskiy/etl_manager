@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.db import models
 
 from ..encoders import PrettyJSONEncoder
+from ..tasks import refresh_schema
 
 
 class DataSourceType(models.TextChoices):

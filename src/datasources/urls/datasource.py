@@ -4,6 +4,7 @@ from datasources.views.datasource import (
     DataSourceCreateView,
     DataSourceDetailView,
     DataSourceListView,
+    DataSourceRefreshSchemaView,
 )
 
 urlpatterns = [
@@ -13,5 +14,10 @@ urlpatterns = [
         "<int:pk>/",
         DataSourceDetailView.as_view(),
         name="datasource-detail",
-    )
+    ),
+    path(
+        "<int:pk>/refresh-schema/",
+        DataSourceRefreshSchemaView.as_view(),
+        name="datasource-refresh-schema",
+    ),
 ]

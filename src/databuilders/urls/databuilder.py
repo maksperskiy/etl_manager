@@ -5,6 +5,7 @@ from databuilders.views.databuilder import (
     DataBuilderDetailView,
     DataBuilderListView,
     DataBuilderTestView,
+    DataBuilderRefreshSchemaView
 )
 
 urlpatterns = [
@@ -19,5 +20,10 @@ urlpatterns = [
         "<int:pk>/test/",
         DataBuilderTestView.as_view(),
         name="databuilder-test",
+    ),
+    path(
+        "<int:pk>/refresh-schema/",
+        DataBuilderRefreshSchemaView.as_view(),
+        name="databuilder-refresh-schema",
     ),
 ]

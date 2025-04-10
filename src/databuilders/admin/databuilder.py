@@ -3,7 +3,12 @@ from django.contrib import admin
 from django.db import models
 from django_json_widget.widgets import JSONEditorWidget
 
-from databuilders.models import DataBuilder
+from databuilders.models import DataBuilder, DataSample
+
+
+@admin.register(DataSample)
+class DataSampleAdmin(admin.ModelAdmin):
+    ...
 
 
 @admin.register(DataBuilder)

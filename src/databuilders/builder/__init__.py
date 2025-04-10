@@ -184,11 +184,12 @@ class DataFrameTransformer:
 class ETLPipeline:
     """Orchestrates the ETL pipeline."""
 
-    def __init__(self, config: dict, input_dataframes: Dict[str, DataFrame], spark_session_builder: SparkSession.Builder = None):
+    def __init__(self, config: dict, input_dataframes: Dict[str, DataFrame], spark_session_builder: SparkSession.Builder = None, result_df_name: str = None):
         self.config = config
         self.spark = (spark_session_builder or SparkSession.builder.appName("ETLPipeline")).getOrCreate()
         self.dataframes = input_dataframes
         self.transformer = DataFrameTransformer(self.dataframes)
+        self.result_df_name = result_df_name or "transformed_df"
 
     def run(self) -> Optional[DataFrame]:
         """Execute the ETL pipeline."""
@@ -196,7 +197,8 @@ class ETLPipeline:
             transform_configs = self.config
             self.dataframes = self.transformer.transform(transform_configs)
             logger.info("ETL transformations executed successfully.")
-            return self.dataframes["transformed_df"]
+            print(self.dataframes.keys())
+            return self.dataframes[self.result_df_name]
         except Exception as e:
             logger.error(f"ETL pipeline failed: {e}")
             raise
