@@ -3,8 +3,8 @@ import os
 from django.conf import settings
 from pyspark.sql import SparkSession
 
-from .mysql_connector import MysqlConnector
-from .postgresql_connector import PostgresqlConnector
+from .mysql_connector import MySQLConnector
+from .postgresql_connector import PostgreSQLConnector
 from .s3_connector import S3Connector
 
 
@@ -25,9 +25,9 @@ class DataSourceConnectorFactory:
         source_type = self.data_source.source_type
 
         if source_type == "POSTGRES":
-            return PostgresqlConnector(session_builder, self.data_source)
+            return PostgreSQLConnector(session_builder, self.data_source)
         elif source_type == "MYSQL":
-            return MysqlConnector(session_builder, self.data_source)
+            return MySQLConnector(session_builder, self.data_source)
         elif source_type in ["FILE", "S3"]:
             return S3Connector(session_builder, self.data_source)
         else:

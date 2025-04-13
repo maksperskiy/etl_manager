@@ -5,6 +5,7 @@ from django_json_widget.widgets import JSONEditorWidget
 
 from datasources.models import CommonDataSourceConfig
 
+
 @admin.register(CommonDataSourceConfig)
 class CommonDataSourceConfigAdmin(admin.ModelAdmin):
     list_display = ("pk", "source_type", "author", "created_at")

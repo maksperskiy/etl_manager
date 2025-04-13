@@ -7,8 +7,7 @@ from databuilders.models import DataBuilder, DataSample
 
 
 @admin.register(DataSample)
-class DataSampleAdmin(admin.ModelAdmin):
-    ...
+class DataSampleAdmin(admin.ModelAdmin): ...
 
 
 @admin.register(DataBuilder)
@@ -16,7 +15,10 @@ class DataBuilderAdmin(admin.ModelAdmin):
     list_display = ("pk", "name", "author", "created_at")
     list_filter = ("author",)
     readonly_fields = ("author", "created_at")
-    search_fields = ("name", "author__username",)
+    search_fields = (
+        "name",
+        "author__username",
+    )
     filter_horizontal = ("users_with_access",)
     formfield_overrides = {
         models.JSONField: {"widget": JSONEditorWidget},

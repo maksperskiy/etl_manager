@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from django.db import models
 
 from datasources.encoders import PrettyJSONEncoder
+
 from .datasource import DataSourceType
 
 

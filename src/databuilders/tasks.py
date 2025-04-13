@@ -23,7 +23,7 @@ def set_sample(builder_pk: int, size: int):
     builder.save()
 
     refresh_schema(builder_pk)
-    
+
     df = builder.build_dataframe().limit(size)
     headers = df.columns
     rows = df.collect()

@@ -1,5 +1,2 @@
-from .datasource import (
-    DataSourceListView,
-    DataSourceCreateView,
-    DataSourceDetailView,
-)
+from .datasource import (DataSourceCreateView, DataSourceDetailView,
+                         DataSourceListView)

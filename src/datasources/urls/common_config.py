@@ -1,10 +1,8 @@
 from django.urls import path
 
-from datasources.views.common_config import (
-    CommonDataSourceConfigCreateView,
-    CommonDataSourceConfigDetailView,
-    CommonDataSourceConfigListView,
-)
+from datasources.views.common_config import (CommonDataSourceConfigCreateView,
+                                             CommonDataSourceConfigDetailView,
+                                             CommonDataSourceConfigListView)
 
 urlpatterns = [
     path("", CommonDataSourceConfigListView.as_view(), name="datasource-list"),

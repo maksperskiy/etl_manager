@@ -1,5 +1,3 @@
-from .databuilder import (
-    DataBuilderCreateSerializer,
-    DataBuilderDetailSerializer,
-    DataBuilderListSerializer,
-)
+from .databuilder import (DataBuilderCreateSerializer,
+                          DataBuilderDetailSerializer,
+                          DataBuilderListSerializer)

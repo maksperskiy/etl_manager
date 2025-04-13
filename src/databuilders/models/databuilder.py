@@ -1,14 +1,15 @@
 import json
 
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
-from django.conf import settings
 from pyspark.sql import SparkSession
 
 from databuilders.builder import ETLPipeline
-from .sample import DataSample
+
 from ..encoders import PrettyJSONEncoder
 from ..tasks import set_sample
+from .sample import DataSample
 
 
 class DataBuilder(models.Model):
@@ -33,7 +34,9 @@ class DataBuilder(models.Model):
     )
     databuilders = models.ManyToManyField("self", blank=True)
 
-    sample = models.OneToOneField(DataSample, blank=True, null=True, on_delete=models.SET_NULL)
+    sample = models.OneToOneField(
+        DataSample, blank=True, null=True, on_delete=models.SET_NULL
+    )
 
     @property
     def spark_session_builder(self):
@@ -55,7 +58,9 @@ class DataBuilder(models.Model):
             configs = []
             for related_databuilder in databuilder.databuilders.all():
                 configs.extend(collect_configs(related_databuilder, depth + 1))
-            configs.append({"config": databuilder.config.get("transform", []), "depth": depth})
+            configs.append(
+                {"config": databuilder.config.get("transform", []), "depth": depth}
+            )
             return configs
 
         # Collect all configs with their depth
@@ -102,9 +107,13 @@ class DataBuilder(models.Model):
         return pipeline.run()
 
     def get_dataframe_head(self, size: int = 10):
-        if self.sample and self.sample.data and self.sample.created_at > self.updated_at:        
+        if (
+            self.sample
+            and self.sample.data
+            and self.sample.created_at > self.updated_at
+        ):
             return dict(status="OK", **self.sample.data)
-        elif self.sample and not self.sample.data: 
+        elif self.sample and not self.sample.data:
             ...
         else:
             if self.sample:

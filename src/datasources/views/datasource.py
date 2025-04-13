@@ -1,19 +1,17 @@
 from django.db.models import Q
 from rest_framework import generics, status
-from rest_framework.response import Response
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.authentication import (BasicAuthentication,
+                                           SessionAuthentication)
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
-from ..models.datasource import (
-    DataSource,  # Replace with your actual model
-    DataSourceType,
-)
+from datasources.serializers import (DataSourceCreateSerializer,
+                                     DataSourceDetailSerializer,
+                                     DataSourceListSerializer)
+
+from ..models.datasource import DataSource  # Replace with your actual model
+from ..models.datasource import DataSourceType
 from ..tasks import refresh_schema
-from datasources.serializers import (
-    DataSourceCreateSerializer,
-    DataSourceDetailSerializer,
-    DataSourceListSerializer,
-)
 
 
 class DataSourceListView(generics.ListAPIView):
@@ -56,6 +54,7 @@ class DataSourceDetailView(generics.RetrieveUpdateDestroyAPIView):
         #     queryset = queryset.filter(query)
         return queryset.all()
 
+
 class DataSourceRefreshSchemaView(generics.RetrieveAPIView):
     serializer_class = DataSourceDetailSerializer
     # authentication_classes = [SessionAuthentication, BasicAuthentication]
@@ -75,4 +74,6 @@ class DataSourceRefreshSchemaView(generics.RetrieveAPIView):
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         refresh_schema.delay(instance.pk)
-        return Response({"details": "Schema refresh started"}, status=status.HTTP_200_OK)
+        return Response(
+            {"details": "Schema refresh started"}, status=status.HTTP_200_OK
+        )

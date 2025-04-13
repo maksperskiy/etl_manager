@@ -1,11 +1,9 @@
 from django.urls import path
 
-from datasources.views.datasource import (
-    DataSourceCreateView,
-    DataSourceDetailView,
-    DataSourceListView,
-    DataSourceRefreshSchemaView,
-)
+from datasources.views.datasource import (DataSourceCreateView,
+                                          DataSourceDetailView,
+                                          DataSourceListView,
+                                          DataSourceRefreshSchemaView)
 
 urlpatterns = [
     path("", DataSourceListView.as_view(), name="datasource-list"),

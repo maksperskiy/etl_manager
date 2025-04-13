@@ -1,10 +1,13 @@
-from django.contrib.auth import authenticate, login, logout
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
-from rest_framework.permissions import IsAuthenticated
 import json
+
+from django.contrib.auth import authenticate, login, logout
+from rest_framework import status
+from rest_framework.authentication import (BasicAuthentication,
+                                           SessionAuthentication)
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
 from .forms import LoginForm, SignUpForm
 
 
@@ -44,11 +47,9 @@ class UserLoginView(APIView):
                 )
         except:
             return Response(
-                    {
-                        "message": "Bad request"
-                    },
-                    status=status.HTTP_400_BAD_REQUEST,
-                ) 
+                {"message": "Bad request"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
 
 class UserSignUpView(APIView):
@@ -77,15 +78,15 @@ class UserSignUpView(APIView):
                 )
         except:
             return Response(
-                    {
-                        "message": "Bad request"
-                    },
-                    status=status.HTTP_400_BAD_REQUEST,
-                ) 
+                {"message": "Bad request"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
 
 class UserLogoutView(APIView):
     authentication_classes = [SessionAuthentication, BasicAuthentication]
     permission_classes = [IsAuthenticated]
+
     def post(self, request):
         logout(request)
         return Response({"message": "Logout successful"}, status=status.HTTP_200_OK)

@@ -1,15 +1,14 @@
 from django.db.models import Q
 from rest_framework import generics, status
-from rest_framework.response import Response
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.authentication import (BasicAuthentication,
+                                           SessionAuthentication)
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
 from datasources.models import CommonDataSourceConfig
-from datasources.serializers import (
-    CommonDataSourceConfigCreateSerializer,
-    CommonDataSourceConfigDetailSerializer,
-    CommonDataSourceConfigListSerializer,
-)
+from datasources.serializers import (CommonDataSourceConfigCreateSerializer,
+                                     CommonDataSourceConfigDetailSerializer,
+                                     CommonDataSourceConfigListSerializer)
 
 
 class CommonDataSourceConfigListView(generics.ListAPIView):

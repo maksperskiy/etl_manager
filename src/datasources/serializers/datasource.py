@@ -57,7 +57,7 @@ class DataSourceCreateSerializer(serializers.ModelSerializer):
                 ]
             ):
                 raise serializers.ValidationError("File is not supported.")
-            
+
         # if request := self.context.get("request"):
         #     data["author"] = request.user.pk
         return data

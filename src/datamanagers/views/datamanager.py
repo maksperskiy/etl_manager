@@ -5,21 +5,21 @@ from rest_framework.authentication import (BasicAuthentication,
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from databuilders.models import DataBuilder
-from databuilders.serializers import (DataBuilderCreateSerializer,
-                                      DataBuilderDetailSerializer,
-                                      DataBuilderListSerializer)
-from databuilders.tasks import refresh_schema
+from datamanagers.models import DataManager
+from datamanagers.serializers import (DataManagerCreateSerializer,
+                                      DataManagerDetailSerializer,
+                                      DataManagerListSerializer)
+from datamanagers.tasks import run_process
 
 
-class DataBuilderListView(generics.ListAPIView):
-    serializer_class = DataBuilderListSerializer
+class DataManagerListView(generics.ListAPIView):
+    serializer_class = DataManagerListSerializer
     # authentication_classes = [SessionAuthentication, BasicAuthentication]
     # permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         request = self.request
-        queryset = DataBuilder.objects.all()
+        queryset = DataManager.objects.all()
         # if not request.user.is_superuser:
         #     query = Q(
         #         Q(author=request.user.pk)
@@ -29,21 +29,21 @@ class DataBuilderListView(generics.ListAPIView):
         return queryset.all()
 
 
-class DataBuilderCreateView(generics.CreateAPIView):
-    queryset = DataBuilder.objects.all()
-    serializer_class = DataBuilderCreateSerializer
+class DataManagerCreateView(generics.CreateAPIView):
+    queryset = DataManager.objects.all()
+    serializer_class = DataManagerCreateSerializer
     # authentication_classes = [SessionAuthentication, BasicAuthentication]
     # permission_classes = [IsAuthenticated]
 
 
-class DataBuilderDetailView(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = DataBuilderDetailSerializer
+class DataManagerDetailView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = DataManagerDetailSerializer
     # authentication_classes = [SessionAuthentication, BasicAuthentication]
     # permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         request = self.request
-        queryset = DataBuilder.objects.all()
+        queryset = DataManager.objects.all()
         # if not request.user.is_superuser:
         #     query = Q(
         #         Q(author=request.user.pk)
@@ -53,37 +53,14 @@ class DataBuilderDetailView(generics.RetrieveUpdateDestroyAPIView):
         return queryset.all()
 
 
-class DataBuilderTestView(generics.RetrieveAPIView):
-    serializer_class = DataBuilderDetailSerializer
+class DataManagerPerformRunView(generics.RetrieveAPIView):
+    serializer_class = DataManagerDetailSerializer
     # authentication_classes = [SessionAuthentication, BasicAuthentication]
     # permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         request = self.request
-        queryset = DataBuilder.objects.all()
-        # if not request.user.is_superuser:
-        #     query = Q(
-        #         Q(author=request.user.pk)
-        #         | Q(users_with_access__pk__contains=request.user.pk)
-        #     )
-        #     queryset = queryset.filter(query)
-        return queryset.all()
-
-    def retrieve(self, request, *args, **kwargs):
-        instance = self.get_object()
-        result = instance.get_dataframe_head()
-
-        return Response(result)
-
-
-class DataBuilderRefreshSchemaView(generics.RetrieveAPIView):
-    serializer_class = DataBuilderDetailSerializer
-    # authentication_classes = [SessionAuthentication, BasicAuthentication]
-    # permission_classes = [IsAuthenticated]
-
-    def get_queryset(self):
-        request = self.request
-        queryset = DataBuilder.objects.all()
+        queryset = DataManager.objects.all()
         # if not request.user.is_superuser:
         #     query = Q(
         #         Q(author=request.user.pk)
@@ -94,7 +71,5 @@ class DataBuilderRefreshSchemaView(generics.RetrieveAPIView):
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
-        refresh_schema.delay(instance.pk)
-        return Response(
-            {"details": "Schema refresh started"}, status=status.HTTP_200_OK
-        )
+        run_process.delay(instance.pk)
+        return Response({"details": "Run started"}, status=status.HTTP_200_OK)

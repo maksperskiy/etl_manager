@@ -1,12 +1,10 @@
 from django.urls import path
 
-from databuilders.views.databuilder import (
-    DataBuilderCreateView,
-    DataBuilderDetailView,
-    DataBuilderListView,
-    DataBuilderTestView,
-    DataBuilderRefreshSchemaView
-)
+from databuilders.views.databuilder import (DataBuilderCreateView,
+                                            DataBuilderDetailView,
+                                            DataBuilderListView,
+                                            DataBuilderRefreshSchemaView,
+                                            DataBuilderTestView)
 
 urlpatterns = [
     path("", DataBuilderListView.as_view(), name="databuilder-list"),

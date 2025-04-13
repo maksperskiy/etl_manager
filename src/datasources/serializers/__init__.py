@@ -1,10 +1,5 @@
-from .datasource import (
-    DataSourceCreateSerializer,
-    DataSourceDetailSerializer,
-    DataSourceListSerializer,
-)
-from .common_config import (
-    CommonDataSourceConfigDetailSerializer,
-    CommonDataSourceConfigListSerializer,
-    CommonDataSourceConfigCreateSerializer
-)
+from .common_config import (CommonDataSourceConfigCreateSerializer,
+                            CommonDataSourceConfigDetailSerializer,
+                            CommonDataSourceConfigListSerializer)
+from .datasource import (DataSourceCreateSerializer,
+                         DataSourceDetailSerializer, DataSourceListSerializer)

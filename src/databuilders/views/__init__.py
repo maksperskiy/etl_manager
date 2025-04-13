@@ -1,6 +1,2 @@
-from .databuilder import (
-    DataBuilderListView,
-    DataBuilderCreateView,
-    DataBuilderDetailView,
-    DataBuilderTestView,
-)
+from .databuilder import (DataBuilderCreateView, DataBuilderDetailView,
+                          DataBuilderListView, DataBuilderTestView)
