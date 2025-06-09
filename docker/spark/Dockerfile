@@ -1,4 +1,4 @@
-FROM bitnami/spark:3.5 AS base
+FROM bitnami/spark:3.5.6 AS base
 
 USER root
 RUN install_packages curl

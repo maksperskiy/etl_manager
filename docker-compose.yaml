@@ -87,7 +87,7 @@ services:
 
   rabbitmq:
     hostname: rabbitmq
-    image: rabbitmq:management-alpine
+    image: rabbitmq:4.1.1-management-alpine
     ports:
       - "5672:5672"
       - "15672:15672"
@@ -99,7 +99,7 @@ services:
     restart: always
 
   redis:
-    image: redis:latest
+    image: redis:8.0.2
     environment:
       - REDIS_PASSWORD=${REDIS_PASSWORD}
       - REDIS_USER=${REDIS_USER}
