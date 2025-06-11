@@ -206,7 +206,6 @@ class ETLPipeline:
             transform_configs = self.config
             self.dataframes = self.transformer.transform(transform_configs)
             logger.info("ETL transformations executed successfully.")
-            print(self.dataframes.keys())
             return self.dataframes[self.result_df_name]
         except Exception as e:
             logger.error(f"ETL pipeline failed: {e}")

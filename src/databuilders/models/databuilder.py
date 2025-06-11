@@ -1,5 +1,8 @@
 import json
+import logging
+from datetime import datetime, timedelta, timezone
 
+from celery.result import AsyncResult
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
@@ -8,8 +11,11 @@ from pyspark.sql import SparkSession
 from databuilders.builder import ETLPipeline
 
 from ..encoders import PrettyJSONEncoder
+from ..tasks import refresh_schema as refresh_schema_
 from ..tasks import set_sample
 from .sample import DataSample
+
+logger = logging.getLogger(__name__)
 
 
 class DataBuilder(models.Model):
@@ -27,6 +33,7 @@ class DataBuilder(models.Model):
     users_with_access = models.ManyToManyField(
         User, blank=True, related_name="accessible_data_builders"
     )
+    refresh_schema_task_id = models.UUIDField(null=True)
     schema = models.JSONField(encoder=PrettyJSONEncoder, blank=True, null=True)
 
     datasources = models.ManyToManyField(
@@ -34,6 +41,7 @@ class DataBuilder(models.Model):
     )
     databuilders = models.ManyToManyField("self", blank=True)
 
+    refresh_sample_task_id = models.UUIDField(null=True)
     sample = models.OneToOneField(
         DataSample, blank=True, null=True, on_delete=models.SET_NULL
     )
@@ -107,21 +115,62 @@ class DataBuilder(models.Model):
         return pipeline.run()
 
     def get_dataframe_head(self, size: int = 10):
-        if (
-            self.sample
-            and self.sample.data
-            and self.sample.created_at > self.updated_at
-        ):
-            return dict(status="OK", **self.sample.data)
-        elif self.sample and not self.sample.data:
-            ...
-        else:
-            if self.sample:
-                self.sample.delete()
-            set_sample.delay(self.pk, size)
-        return {"status": "Waiting for build test sample..."}
+        if not self.sample or (self.sample.created_at < self.updated_at):
+            if self.refresh_sample_task_id:
+                task = AsyncResult(str(self.refresh_sample_task_id).encode())
+                return dict(
+                    status="refresh_running",
+                    task_id=self.refresh_sample_task_id,
+                    task_status=task.status,
+                    task_info=task.info,
+                    data=None,
+                )
+
+            task = set_sample.apply_async(
+                args=(self.pk, size), soft_time_limit=60 * 1, time_limit=60 * 10
+            )
+            self.refresh_sample_task_id = task.id
+            self.save()
+            return dict(
+                status="refresh_started",
+                task_id=self.refresh_sample_task_id,
+                task_status="PENDING",
+                task_info={},
+                data=None,
+            )
+        return dict(status="ok", data=self.sample.data)
+
+    def clean_refresh_sample_task_id(self):
+        self.refresh_sample_task_id = None
+        self.save()
 
     def set_schema(self):
         self.schema = json.loads(self.build_dataframe().schema.json())
         self.save()
         return self.schema
+
+    def refresh_schema(self):
+        if self.refresh_schema_task_id:
+            task = AsyncResult(str(self.refresh_schema_task_id).encode())
+            return dict(
+                status="refresh_running",
+                task_id=self.refresh_schema_task_id,
+                task_status=task.status,
+                task_info=task.info,
+            )
+
+        task = refresh_schema_.apply_async(
+            args=(self.pk,), soft_time_limit=60 * 2, time_limit=60 * 10
+        )
+        self.refresh_schema_task_id = task.id
+        self.save()
+        return dict(
+            status="refresh_started",
+            task_id=self.refresh_schema_task_id,
+            task_status="PENDING",
+            task_info={},
+        )
+
+    def clean_refresh_schema_task_id(self):
+        self.refresh_schema_task_id = None
+        self.save()

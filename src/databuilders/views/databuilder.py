@@ -5,6 +5,7 @@ from rest_framework.authentication import (BasicAuthentication,
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from common.pagination import UniversalPagination
 from databuilders.models import DataBuilder
 from databuilders.serializers import (DataBuilderCreateSerializer,
                                       DataBuilderDetailSerializer,
@@ -14,12 +15,13 @@ from databuilders.tasks import refresh_schema
 
 class DataBuilderListView(generics.ListAPIView):
     serializer_class = DataBuilderListSerializer
+    pagination_class = UniversalPagination
     # authentication_classes = [SessionAuthentication, BasicAuthentication]
     # permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         request = self.request
-        queryset = DataBuilder.objects.all()
+        queryset = DataBuilder.objects.order_by("-updated_at").all()
         # if not request.user.is_superuser:
         #     query = Q(
         #         Q(author=request.user.pk)
@@ -73,7 +75,7 @@ class DataBuilderTestView(generics.RetrieveAPIView):
         instance = self.get_object()
         result = instance.get_dataframe_head()
 
-        return Response(result)
+        return Response({"details": result}, status=status.HTTP_200_OK)
 
 
 class DataBuilderRefreshSchemaView(generics.RetrieveAPIView):
@@ -94,7 +96,5 @@ class DataBuilderRefreshSchemaView(generics.RetrieveAPIView):
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
-        refresh_schema.delay(instance.pk)
-        return Response(
-            {"details": "Schema refresh started"}, status=status.HTTP_200_OK
-        )
+        result = instance.refresh_schema()
+        return Response({"details": result}, status=status.HTTP_200_OK)

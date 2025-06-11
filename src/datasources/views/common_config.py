@@ -5,6 +5,7 @@ from rest_framework.authentication import (BasicAuthentication,
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from common.pagination import UniversalPagination
 from datasources.models import CommonDataSourceConfig
 from datasources.serializers import (CommonDataSourceConfigCreateSerializer,
                                      CommonDataSourceConfigDetailSerializer,
@@ -13,12 +14,13 @@ from datasources.serializers import (CommonDataSourceConfigCreateSerializer,
 
 class CommonDataSourceConfigListView(generics.ListAPIView):
     serializer_class = CommonDataSourceConfigListSerializer
+    pagination_class = UniversalPagination
     # authentication_classes = [SessionAuthentication, BasicAuthentication]
     # permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         request = self.request
-        queryset = CommonDataSourceConfig.objects.all()
+        queryset = CommonDataSourceConfig.objects.order_by("-created_at").all()
         # if not request.user.is_superuser:
         #     query = Q(
         #         Q(author=request.user.pk)

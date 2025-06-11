@@ -210,6 +210,10 @@ REDIS_PORT = os.getenv("REDIS_PORT", 6379)
 # Celery configurations
 CELERY_BROKER_URL = f"amqp://{RABBIT_HOST}:{RABBIT_PORT}//"
 CELERY_RESULT_BACKEND = f"redis://{REDIS_HOST}:{REDIS_PORT}/0"
+CELERY_RESULT_EXTENDED = True
+CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_TASK_SERIALIZER = "json"
+CELERY_TRACK_STARTED = True
 
 # Optional: Specify the timezone if needed
 CELERY_TIMEZONE = os.getenv("TZ", "UTC")

@@ -5,6 +5,7 @@ from rest_framework.authentication import (BasicAuthentication,
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from common.pagination import UniversalPagination
 from datasources.serializers import (DataSourceCreateSerializer,
                                      DataSourceDetailSerializer,
                                      DataSourceListSerializer)
@@ -16,12 +17,13 @@ from ..tasks import refresh_schema
 
 class DataSourceListView(generics.ListAPIView):
     serializer_class = DataSourceListSerializer
+    pagination_class = UniversalPagination
     # authentication_classes = [SessionAuthentication, BasicAuthentication]
     # permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         request = self.request
-        queryset = DataSource.objects.all()
+        queryset = DataSource.objects.order_by("-last_used").all()
         # if not request.user.is_superuser:
         #     query = Q(
         #         Q(author=request.user.pk)
@@ -73,7 +75,5 @@ class DataSourceRefreshSchemaView(generics.RetrieveAPIView):
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
-        refresh_schema.delay(instance.pk)
-        return Response(
-            {"details": "Schema refresh started"}, status=status.HTTP_200_OK
-        )
+        result = instance.refresh_schema()
+        return Response({"details": result}, status=status.HTTP_200_OK)
